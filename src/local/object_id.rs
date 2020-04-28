@@ -1,4 +1,5 @@
 use std::{
+    borrow::Cow,
     cmp::{Eq, Ord, Ordering, PartialEq, PartialOrd},
     fmt,
     hash::{Hash, Hasher},
@@ -7,7 +8,7 @@ use std::{
 };
 
 use arrayvec::ArrayString;
-use serde::{Deserialize, Serialize};
+use serde::{Deserialize, Serialize, Serializer, de::{Deserializer, Error as _, Unexpected}};
 use stdweb::{Reference, UnsafeTypedArray};
 
 use crate::{
@@ -61,11 +62,8 @@ pub use raw::*;
 /// [`BTreeMap`]: std::collections::BTreeMap
 /// [1]: https://docs.mongodb.com/manual/reference/method/ObjectId/
 // Copy, Clone, Debug, PartialEq, Eq, Hash, PartialEq, Eq implemented manually below
-#[derive(Serialize, Deserialize)]
-#[serde(transparent, bound = "")]
 pub struct ObjectId<T> {
     raw: RawObjectId,
-    #[serde(skip)]
     phantom: PhantomData<T>,
 }
 
@@ -307,6 +305,27 @@ impl<T> ObjectId<T> {
             Ok(v) => v,
             Err(e) => panic!("error resolving id {}: {}", self, e),
         }
+    }
+}
+
+impl<T> Serialize for ObjectId<T> {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        self.to_string().serialize(serializer)
+    }
+}
+
+impl<'de, T> Deserialize<'de> for ObjectId<T> {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        let s: Cow<'de, str> = Cow::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            D::Error::invalid_value(Unexpected::Str(&s), &"a valid object id")
+        })
     }
 }
 

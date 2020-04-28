@@ -1,10 +1,11 @@
 use std::{
+    borrow::Cow,
     fmt::{self, Write},
     str::FromStr,
 };
 
 use arrayvec::ArrayString;
-use serde::{Deserialize, Serialize};
+use serde::{Deserialize, Serialize, Serializer, de::{Deserializer, Error as _, Unexpected}};
 use stdweb::{Reference, UnsafeTypedArray};
 
 use super::errors::RawObjectIdParseError;
@@ -37,8 +38,7 @@ const MAX_PACKED_VAL: u128 = (1 << (32 * 3)) - 1;
 /// [`Ord`]: std::cmp::Ord
 /// [`PartialOrd`]: std::cmp::PartialOrd
 /// [`ObjectId`]: super::ObjectId
-#[derive(Copy, Clone, PartialEq, Eq, Hash, Serialize, Deserialize, PartialOrd, Ord)]
-#[serde(transparent)]
+#[derive(Copy, Clone, PartialEq, Eq, Hash, PartialOrd, Ord)]
 pub struct RawObjectId {
     packed: [u32; 3],
 }
@@ -91,6 +91,27 @@ impl TryFrom<u128> for RawObjectId {
             (val & 0xFFFF_FFFF) as u32,
         ];
         Ok(Self::from_packed(as_array))
+    }
+}
+
+impl Serialize for RawObjectId {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        self.to_string().serialize(serializer)
+    }
+}
+
+impl<'de> Deserialize<'de> for RawObjectId {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        let s: Cow<'de, str> = Cow::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            D::Error::invalid_value(Unexpected::Str(&s), &"a valid object id")
+        })
     }
 }
 
