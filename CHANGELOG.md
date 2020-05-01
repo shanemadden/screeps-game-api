@@ -70,6 +70,8 @@ Unreleased
   are empty
 - Change `HasStore::store_free_capacity` to prevent panics on negative values due to expiration of
   `OPERATE_STORAGE`
+- Change `HasStore::store_free_capacity` to return `i32`, handling potential negative values due
+  to expiration of `OPERATE_STORAGE`
 
 0.7.0 (2019-10-19)
 ==================
