@@ -68,6 +68,8 @@ Unreleased
 - Change `MemoryReference::get` to return a generic error type
 - Change `StructureLab::mineral_type` to return `Option<ResourceType>`, avoiding panic when labs
   are empty
+- Change `HasStore::store_free_capacity` to prevent panics on negative values due to expiration of
+  `OPERATE_STORAGE`
 
 0.7.0 (2019-10-19)
 ==================
