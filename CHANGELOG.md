@@ -85,6 +85,11 @@ Unreleased
   lifetime points required for a given level of GCL or GPL
 - Change `constants::GCL_POW` to f64 from f32 due to slightly incorrect calculations when using
   this from f32 to calculate GCL levels (breaking)
+- Add missed `StructureFactory::level` function to determine a factory's level (or `None` if a
+  power creep has not yet used `OPERATE_FACTORY`)
+- Change `game::cpu::limit`, `tick_limit`, `bucket`, `shard_limits`, and `set_shard_limits` to
+  use `u32` from `f64`
+- Add `total_available_size` field to `game::cpu::HeapStatistics`
 
 0.7.0 (2019-10-19)
 ==================
