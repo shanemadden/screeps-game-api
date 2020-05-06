@@ -81,6 +81,7 @@ Unreleased
   this from f32 to calculate GCL levels (breaking)
 - Add missed `StructureFactory::level` function to determine a factory's level (or `None` if a
   power creep has not yet used `OPERATE_FACTORY`)
+<<<<<<< HEAD
 - Add `game::gcl::total_for_level` and `game::gpl::total_for_level` which calculate the total
   lifetime points required for a given level of GCL or GPL
 - Change `constants::GCL_POW` to f64 from f32 due to slightly incorrect calculations when using
@@ -90,6 +91,10 @@ Unreleased
 - Change `game::cpu::limit`, `tick_limit`, `bucket`, `shard_limits`, and `set_shard_limits` to
   use `u32` from `f64`
 - Add `total_available_size` field to `game::cpu::HeapStatistics`
+=======
+- Remove explicit `ticks_to_decay` implementations on `StructureContainer` and `Tombstone`, use
+  the implementation on `CanDecay` instead (breaking)
+>>>>>>> decay_duplicates
 
 0.7.0 (2019-10-19)
 ==================
