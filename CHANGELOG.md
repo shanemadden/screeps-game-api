@@ -4,6 +4,10 @@ Unreleased
 - Add `game::map::get_room_status()` as interface to new `Game.map.getRoomStatus()` function
 - Remove deprecated `game::map::is_room_available()`, use new `get_room_status` instead
 - Add `StructureLab::reverse_reaction()` as interface to new `reverseReaction()`
+- Add `ResourceType::boost` function translating the `BOOSTS` constant
+- Add `ResourceType::reaction_components` function translating the `REACTIONS` constant
+- Add `ResourceType::commodity_recipe` function and `FactoryRecipe` struct translating the
+  `COMMODITIES` constant
 - Add `effects()` to room objects, allowing access to the effects applied on room objects which
   are used by both strongholds and power creeps.  New `EffectType` enum returned by this call
   represents the `NaturalEffectType` (for stronghold effects) or `PowerType` (for power creeps)
@@ -56,6 +60,28 @@ Unreleased
   for an unavailable room
 - Change `Source` and `Mineral` `ticks_to_regeneration()` functions to return 0, preventing panics
   in cases where the game API returns negative or undefined values
+- Change `StructureTerminal::send` to take the destination room name as `RoomName` instead of
+  `&str` (breaking)
+- Change `game::market::get_all_orders` to accept an `Option<MarketResourceType>` as a filter
+  since this is optimized in the server code (breaking)
+- Add `RoomTerrain::get_raw_buffer_to_array` to load a room's terrain into an existing `[u8; 2500]`
+- Change `MemoryReference::get` to return a generic error type
+- Add `RoomVisual`, rendering primitives (`Circle`, `Line`, `Rect`, `Poly`, `Text`).
+- Add Visual rendering primitive enum for storage and batching.
+- Add `MoveToOptions::visualize_path_style`to allow for path visualization of movement system.
+- Change `HasStore::store_free_capacity` to return `i32`, handling potential negative values due
+  to expiration of `OPERATE_STORAGE`
+- Add `game::gcl::total_for_level` and `game::gpl::total_for_level` which calculate the total
+  lifetime points required for a given level of GCL or GPL
+- Change `constants::GCL_POW` to f64 from f32 due to slightly incorrect calculations when using
+  this from f32 to calculate GCL levels (breaking)
+- Add missed `StructureFactory::level` function to determine a factory's level (or `None` if a
+  power creep has not yet used `OPERATE_FACTORY`)
+- Remove explicit `ticks_to_decay` implementations on `StructureContainer` and `Tombstone`, use
+  the implementation on `CanDecay` instead (breaking)
+- Change `game::cpu::limit`, `tick_limit`, `bucket`, `shard_limits`, and `set_shard_limits` to
+  use `u32` from `f64`
+- Add `total_available_size` field to `game::cpu::HeapStatistics`
 
 0.7.0 (2019-10-19)
 ==================
