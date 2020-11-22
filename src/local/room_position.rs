@@ -444,11 +444,7 @@ mod serde {
         where
             S: Serializer,
         {
-            if serializer.is_human_readable() {
-                ReadableFormat::from(*self).serialize(serializer)
-            } else {
-                self.packed_repr().serialize(serializer)
-            }
+            self.packed_repr().serialize(serializer)
         }
     }
 
@@ -457,11 +453,7 @@ mod serde {
         where
             D: Deserializer<'de>,
         {
-            if deserializer.is_human_readable() {
-                ReadableFormat::deserialize(deserializer).map(Into::into)
-            } else {
-                i32::deserialize(deserializer).map(Position::from_packed)
-            }
+            i32::deserialize(deserializer).map(Position::from_packed)
         }
     }
 }
