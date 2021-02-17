@@ -10,13 +10,14 @@
 #[cfg(feature = "seasonal-season-1")]
 pub mod season_1 {
     // RESOURCE_SCORE defined in `types.rs`
-    // FIND_SCORE_CONTAINERS defined in `find.rs`
+    // FIND_SCORE_CONTAINERS / FIND_SCORE_COLLECTORS defined in `find.rs`
+    // LOOK_SCORE_CONTAINERS / LOOK_SCORE_COLLECTORS defined in `look.rs`
     /// Radius around each [`ScoreCollector`] that starts surrounded with
     /// [`StructureWall`]s with random hit points.
     ///
     /// [`ScoreCollector`]: crate::objects::ScoreCollector
     /// [`StructureWall`]: crate::objects::StructureWall
-    pub const WALLS_RADIUS: u32 = 5;
+    pub const WALLS_RADIUS: u8 = 5;
     /// The percentage chance that a given room will have a [`ScoreContainer`]
     /// spawned in it every [`SCORE_CONTAINER_SPAWN_INTERVAL_TICKS`] ticks.
     ///
@@ -37,4 +38,72 @@ pub mod season_1 {
     ///
     /// [`ScoreCollector`]: crate::objects::ScoreCollector
     pub const SCORE_COLLECTOR_MAX_CAPACITY: u32 = 20_000;
+}
+
+/// Constants for Screeps seasonal, season 2
+///
+/// These constants are relevant to the mechanics in seasonal, season 2.
+/// [This mod](https://github.com/screeps/mod_season2) can be used to enable these mechanics
+/// on a private server.
+#[cfg(feature = "seasonal-season-2")]
+pub mod season_2 {
+    // RESOURCE_SYMBOL_* defined in `types.rs`
+    use crate::constants::ResourceType;
+
+    /// All of the resources which are 'symbols' that can be taken
+    /// to the correct type of [`SymbolDecoder`] to score points.
+    ///
+    /// [`SymbolDecoder`]: crate::objects::SymbolDecoder
+    pub const SYMBOLS: [ResourceType; 22] = [
+        ResourceType::SymbolAleph,
+        ResourceType::SymbolBeth,
+        ResourceType::SymbolGimmel,
+        ResourceType::SymbolDaleth,
+        ResourceType::SymbolHe,
+        ResourceType::SymbolWaw,
+        ResourceType::SymbolZayin,
+        ResourceType::SymbolHeth,
+        ResourceType::SymbolTeth,
+        ResourceType::SymbolYodh,
+        ResourceType::SymbolKaph,
+        ResourceType::SymbolLamedh,
+        ResourceType::SymbolMem,
+        ResourceType::SymbolNun,
+        ResourceType::SymbolSamekh,
+        ResourceType::SymbolAyin,
+        ResourceType::SymbolPe,
+        ResourceType::SymbolTsade,
+        ResourceType::SymbolQoph,
+        ResourceType::SymbolRes,
+        ResourceType::SymbolSim,
+        ResourceType::SymbolTaw,
+    ];
+    // FIND_SYMBOL_CONTAINERS / FIND_SYMBOL_DECODERS defined in `find.rs`
+    // LOOK_SYMBOL_CONTAINERS / LOOK_SYMBOL_DECODERS defined in `look.rs`
+    /// The percentage chance that a given room will have a [`SymbolContainer`]
+    /// spawned in it every [`SYMBOL_CONTAINER_SPAWN_INTERVAL_TICKS`] ticks.
+    ///
+    /// [`SymbolContainer`]: crate::objects::SymbolContainer
+    pub const SYMBOL_CONTAINER_SPAWN_CHANCE: f32 = 0.01;
+    /// The number of ticks between chances to spawn a [`SymbolContainer`] in
+    /// rooms at random.
+    ///
+    /// [`SymbolContainer`]: crate::objects::SymbolContainer
+    pub const SYMBOL_CONTAINER_SPAWN_INTERVAL_TICKS: u32 = 250;
+    /// Translates the `CONTROLLER_LEVEL_SCORE_MULTIPLIERS` constant, the score
+    /// multipler for the room's [`SymbolDecoder`] depending on the RCL of the
+    /// room.
+    ///
+    /// [`SymbolDecoder`]: crate::objects::SymbolDecoder
+    #[inline]
+    pub fn controller_level_score_multiplers(rcl: u32) -> u32 {
+        match rcl {
+            4 => 3,
+            5 => 9,
+            6 => 27,
+            7 => 81,
+            8 => 243,
+            _ => 1,
+        }
+    }
 }
