@@ -42,8 +42,8 @@ function __look_num_to_str(num) {
         case 11: return LOOK_POWER_CREEPS;
         case 12: return LOOK_DEPOSITS;
         case 13: return LOOK_RUINS;
-        case 10011: return LOOK_SCORE_CONTAINERS;
-        case 10012: return LOOK_SCORE_COLLECTORS;
+        //case 10011: return LOOK_SCORE_CONTAINERS;
+        //case 10012: return LOOK_SCORE_COLLECTORS;
         case 10021: return LOOK_SYMBOL_CONTAINERS;
         case 10022: return LOOK_SYMBOL_DECODERS;
         default: throw new Error("unknown look integer encoding " + num);
@@ -66,8 +66,8 @@ function __look_str_to_num(num) {
         case LOOK_POWER_CREEPS: return 11;
         case LOOK_DEPOSITS: return 12;
         case LOOK_RUINS: return 13;
-        case LOOK_SCORE_CONTAINERS: return 10011;
-        case LOOK_SCORE_COLLECTORS: return 10012;
+        //case LOOK_SCORE_CONTAINERS: return 10011;
+        //case LOOK_SCORE_COLLECTORS: return 10012;
         case LOOK_SYMBOL_CONTAINERS: return 10021;
         case LOOK_SYMBOL_DECODERS: return 10022;
         default: throw new Error("unknown look constant " + num);
@@ -218,7 +218,7 @@ function __resource_type_num_to_str(num) {
         case 1002: return CPU_UNLOCK;
         case 1003: return PIXEL;
         case 1004: return ACCESS_KEY;
-        case 10001: return RESOURCE_SCORE;
+        //case 10001: return RESOURCE_SCORE;
         case 10201: return RESOURCE_SYMBOL_ALEPH;
         case 10202: return RESOURCE_SYMBOL_BETH;
         case 10203: return RESOURCE_SYMBOL_GIMMEL;
@@ -335,7 +335,7 @@ function __resource_type_str_to_num(str) {
         case CPU_UNLOCK: return 1002;
         case PIXEL: return 1003;
         case ACCESS_KEY: return 1004;
-        case RESOURCE_SCORE: return 10001;
+        //case RESOURCE_SCORE: return 10001;
         case RESOURCE_SYMBOL_ALEPH: return 10201;
         case RESOURCE_SYMBOL_BETH: return 10202;
         case RESOURCE_SYMBOL_GIMMEL: return 10203;
