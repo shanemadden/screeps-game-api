@@ -108,8 +108,8 @@ impl Room {
         js_unwrap_ref!(@{self.as_ref()}.find(@{ty.find_code()}))
     }
 
-    pub fn find_exit_to(&self, room: &Room) -> Result<ExitDirection, ReturnCode> {
-        let code_val = js! {return @{self.as_ref()}.findExitTo(@{room.as_ref()});};
+    pub fn find_exit_to(&self, room_name: RoomName) -> Result<ExitDirection, ReturnCode> {
+        let code_val = js! {return @{self.as_ref()}.findExitTo(@{room_name});};
         let code_int: i32 = code_val.try_into().unwrap();
 
         if code_int < 0 {
