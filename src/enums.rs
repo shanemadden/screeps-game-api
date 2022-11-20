@@ -2,7 +2,7 @@ use enum_dispatch::enum_dispatch;
 use std::convert::TryFrom;
 use wasm_bindgen::{JsCast, JsValue};
 
-use crate::{objects::*, prelude::*, JsContainerFromValue};
+use crate::{objects::*, prelude::*, JsCollectionFromValue};
 
 #[enum_dispatch(Attackable)]
 pub enum AttackableObject {
@@ -344,7 +344,7 @@ pub enum MovableObject {
 /// Enum used for converting a [`Structure`] into a typed object of its specific
 /// structure type.
 #[enum_dispatch(StructureProperties, HasPosition)]
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub enum StructureObject {
     StructureContainer,
     StructureController,
@@ -416,7 +416,7 @@ impl From<JsValue> for StructureObject {
     }
 }
 
-impl JsContainerFromValue for StructureObject {
+impl JsCollectionFromValue for StructureObject {
     fn from_value(val: JsValue) -> Self {
         Self::from(val)
     }

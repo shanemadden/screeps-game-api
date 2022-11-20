@@ -1,6 +1,6 @@
 use crate::{
     constants::ReturnCode,
-    containers::{JsContainerFromValue, ObjectExt},
+    js_collections::{JsCollectionFromValue, ObjectExt},
     objects::{Creep, OwnedStructure, RoomObject, Store, Structure},
     prelude::*,
     Direction, Part,
@@ -14,7 +14,7 @@ extern "C" {
     ///
     /// [Screeps documentation](https://docs.screeps.com/api/#StructureSpawn)
     #[wasm_bindgen(extends = RoomObject, extends = Structure, extends = OwnedStructure)]
-    #[derive(Clone)]
+    #[derive(Clone, Debug)]
     pub type StructureSpawn;
 
     /// A shortcut to `Memory.spawns[spawn.name]`.
@@ -118,7 +118,7 @@ impl StructureSpawn {
     }
 }
 
-impl JsContainerFromValue for StructureSpawn {
+impl JsCollectionFromValue for StructureSpawn {
     fn from_value(val: JsValue) -> Self {
         val.unchecked_into()
     }

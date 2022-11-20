@@ -2,6 +2,7 @@
 
 use crate::constants::find::Find;
 use enum_iterator::IntoEnumIterator;
+use js_sys::JsString;
 use num_derive::FromPrimitive;
 use num_traits::FromPrimitive;
 use serde::{Deserialize, Serialize};
@@ -70,6 +71,51 @@ impl TryFrom<JsValue> for ReturnCode {
             .as_f64()
             .and_then(|f| Self::from_i32(f as i32))
             .ok_or_else(|| "expected number for return code".to_owned())
+    }
+}
+
+#[derive(
+    Debug, PartialEq, Eq, Clone, Copy, Hash, FromPrimitive, Deserialize_repr, Serialize_repr,
+)]
+#[repr(i8)]
+pub enum ErrorCode {
+    NotOwner = -1,
+    NoPath = -2,
+    NameExists = -3,
+    Busy = -4,
+    NotFound = -5,
+    NotEnough = -6,
+    InvalidTarget = -7,
+    Full = -8,
+    NotInRange = -9,
+    InvalidArgs = -10,
+    Tired = -11,
+    NoBodypart = -12,
+    RclNotEnough = -14,
+    GclNotEnough = -15,
+}
+
+impl From<ReturnCode> for Result<(), ErrorCode> {
+    fn from(value: ReturnCode) -> Self {
+        match value {
+            ReturnCode::Ok => Ok(()),
+            code => {
+                // SAFETY: ErrorCode is a duplicate of ReturnCode, minus the Ok variant that
+                // was covered above.
+                let err_code = unsafe { ErrorCode::from_i8(code as i8).unwrap_unchecked() };
+                Err(err_code)
+            }
+        }
+    }
+}
+
+impl From<Result<(), ErrorCode>> for ReturnCode {
+    fn from(value: Result<(), ErrorCode>) -> Self {
+        match value {
+            Ok(_) => ReturnCode::Ok,
+            // SAFETY: all ErrorCodes are valid ReturnCodes.
+            Err(code) => unsafe { ReturnCode::from_i8(code as i8).unwrap_unchecked() },
+        }
     }
 }
 
@@ -256,6 +302,25 @@ pub enum Terrain {
      * Lava = 4, */
 }
 
+impl Terrain {
+    // the strings here do not match the terrain mask constants, appearing nowhere
+    // but look results. assuming it's a plain if it's anything invalid is probably
+    // not the best approach but for now it's something
+    pub fn from_look_constant_str(terrain_look_str: &str) -> Self {
+        match terrain_look_str {
+            "wall" => Terrain::Wall,
+            "swamp" => Terrain::Swamp,
+            "plain" => Terrain::Plain,
+            _ => Terrain::Plain,
+        }
+    }
+
+    pub fn from_look_constant_jsvalue(terrain_look_jsvalue: JsValue) -> Self {
+        let terrain_look_string: String = JsString::from(terrain_look_jsvalue).into();
+        Self::from_look_constant_str(&terrain_look_string)
+    }
+}
+
 /// Translates body part constants.
 #[wasm_bindgen]
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Deserialize, Serialize)]
@@ -288,18 +353,6 @@ impl Part {
             _ => 0,
         }
     }
-
-    // /// Helper function for deserializing from a string rather than a fake
-    // /// integer value.
-    // pub fn deserialize_from_str<'de, D: Deserializer<'de>>(d: D) -> Result<Self,
-    // D::Error> {     let s: Cow<'de, str> = Cow::deserialize(d)?;
-    //     Self::from_str(&s).map_err(|_| {
-    //         D::Error::invalid_value(
-    //             Unexpected::Str(&s),
-    //             &"a known constant string in BODYPARTS_ALL",
-    //         )
-    //     })
-    // }
 }
 
 impl FromStr for Part {

@@ -1,16 +1,16 @@
 use serde::{
     de::{self, MapAccess, Visitor},
-    Deserialize, Deserializer,
+    Deserialize, Deserializer, Serialize,
 };
 use serde_repr::{Deserialize_repr, Serialize_repr};
 use std::{convert::TryInto, fmt};
 
 use crate::{
     constants::{
-        look::*, Color, ExitDirection, Find, Look, PowerType, ResourceType, ReturnCode,
+        look::*, Color, Direction, ExitDirection, Find, Look, PowerType, ResourceType, ReturnCode,
         StructureType,
     },
-    containers::JsContainerFromValue,
+    js_collections::JsCollectionFromValue,
     objects::*,
     prelude::*,
     FindConstant, RoomCostResult, RoomName,
@@ -25,7 +25,7 @@ extern "C" {
     /// world.
     ///
     /// [Screeps documentation](https://docs.screeps.com/api/#Room)
-    #[derive(Clone)]
+    #[derive(Clone, Debug)]
     pub type Room;
 
     /// The [`StructureController`] for the room, or `None` in rooms that cannot
@@ -84,14 +84,14 @@ extern "C" {
     ///
     /// [Screeps documentation](https://docs.screeps.com/api/#Room.serializePath)
     #[wasm_bindgen(static_method_of = Room, js_name = serializePath)]
-    pub fn serialize_path(path: &Array) -> JsString;
+    fn serialize_path_internal(path: &Array) -> JsString;
 
     /// Deserialize a string representation from [`Room::serialize_path`] back
     /// to a path array.
     ///
     /// [Screeps documentation](https://docs.screeps.com/api/#Room.deserializePath)
     #[wasm_bindgen(static_method_of = Room, js_name = deserializePath)]
-    pub fn deserialize_path(path: &JsString) -> Array;
+    fn deserialize_path_internal(path: &JsString) -> Array;
 
     /// Creates a construction site at given coordinates within this room. If
     /// it's a [`StructureSpawn`], a name can optionally be assigned for the
@@ -149,16 +149,13 @@ extern "C" {
     pub fn find_exit_to(this: &Room, room: &JsValue) -> ExitDirection;
 
     // todo FindPathOptions
-    /// Find a path within the room from one position to another.
-    ///
-    /// [Screeps documentation](https://docs.screeps.com/api/#Room.findPath)
     #[wasm_bindgen(final, method, js_name = findPath)]
-    pub fn find_path(
+    fn find_path_internal(
         this: &Room,
         origin: &RoomPosition,
         goal: &RoomPosition,
         options: Option<&Object>,
-    ) -> Array;
+    ) -> JsValue;
 
     #[wasm_bindgen(final, method, js_name = getEventLog)]
     fn get_event_log_internal(this: &Room, raw: bool) -> JsValue;
@@ -175,50 +172,33 @@ extern "C" {
     #[wasm_bindgen(final, method, js_name = getTerrain)]
     pub fn get_terrain(this: &Room) -> RoomTerrain;
 
-    /// Get an array of all objects at a position.
-    ///
-    /// [Screeps documentation](https://docs.screeps.com/api/#Room.lookAt)
     #[wasm_bindgen(final, method, js_name = lookAt)]
-    pub fn look_at(this: &Room, target: &RoomPosition) -> Array;
+    fn look_at_internal(this: &Room, target: &RoomPosition) -> Array;
 
-    /// Get an array of all objects at the given coordinates.
-    ///
-    /// [Screeps documentation](https://docs.screeps.com/api/#Room.lookAt)
     #[wasm_bindgen(final, method, js_name = lookAt)]
-    pub fn look_at_xy(this: &Room, x: u8, y: u8) -> Array;
+    fn look_at_xy_internal(this: &Room, x: u8, y: u8) -> Array;
 
-    /// Get an array of all objects in a certain area, in either object or array
-    /// format depending on the `as_array` option.
-    ///
-    /// [Screeps documentation](https://docs.screeps.com/api/#Room.lookAtArea)
+    // only calling this in array mode currently due to more complex return type
+    // without
     #[wasm_bindgen(final, method, js_name = lookAtArea)]
-    pub fn look_at_area(
+    fn look_at_area_internal(
         this: &Room,
         top_y: u8,
         left_x: u8,
         bottom_y: u8,
         right_x: u8,
         as_array: bool,
-    ) -> JsValue;
+    ) -> Option<Array>;
 
-    /// Get an array of all objects of a given type at this position, if any.
-    ///
-    /// [Screeps documentation](https://docs.screeps.com/api/#Room.lookForAt)
-    #[wasm_bindgen(method, js_name = lookForAt)]
+    #[wasm_bindgen(final, method, js_name = lookForAt)]
     fn look_for_at_internal(this: &Room, ty: Look, target: &RoomPosition) -> Option<Array>;
 
-    /// Get an array of all objects of a given type at the given coordinates, if
-    /// any.
-    ///
-    /// [Screeps documentation](https://docs.screeps.com/api/#Room.lookForAt)
-    #[wasm_bindgen(method, js_name = lookForAt)]
+    #[wasm_bindgen(final, method, js_name = lookForAt)]
     fn look_for_at_xy_internal(this: &Room, ty: Look, x: u8, y: u8) -> Option<Array>;
 
-    /// Get an array of all objects in a certain area, in either object or array
-    /// format depending on the `as_array` option.
-    ///
-    /// [Screeps documentation](https://docs.screeps.com/api/#Room.lookAtArea)
-    #[wasm_bindgen(method, js_name = lookForAtArea)]
+    // only calling this in array mode currently due to more complex return type
+    // without
+    #[wasm_bindgen(final, method, js_name = lookForAtArea)]
     fn look_for_at_area_internal(
         this: &Room,
         ty: Look,
@@ -227,7 +207,7 @@ extern "C" {
         bottom_y: u8,
         right_x: u8,
         as_array: bool,
-    ) -> JsValue;
+    ) -> Option<Array>;
 }
 
 impl Room {
@@ -235,6 +215,22 @@ impl Room {
         self.name_internal()
             .try_into()
             .expect("expected parseable room name")
+    }
+
+    pub fn serialize_path(path: &[Step]) -> String {
+        Self::serialize_path_internal(
+            serde_wasm_bindgen::to_value(path)
+                .expect("invalid path passed to serialize")
+                .unchecked_ref(),
+        )
+        .into()
+    }
+
+    pub fn deserialize_path(path: &str) -> Vec<Step> {
+        serde_wasm_bindgen::from_value(
+            Self::deserialize_path_internal(&JsString::from(path)).unchecked_into(),
+        )
+        .expect("invalid deserialized path")
     }
 
     pub fn visual(&self) -> RoomVisual {
@@ -252,6 +248,19 @@ impl Room {
             .collect()
     }
 
+    /// Find a path within the room from one position to another.
+    ///
+    /// [Screeps documentation](https://docs.screeps.com/api/#Room.findPath)
+    pub fn find_path(
+        &self,
+        origin: &RoomPosition,
+        goal: &RoomPosition,
+        options: Option<&Object>,
+    ) -> Path {
+        serde_wasm_bindgen::from_value(self.find_path_internal(origin, goal, options))
+            .expect("invalid path from Room.findPath")
+    }
+
     pub fn get_event_log(&self) -> Vec<Event> {
         serde_json::from_str(&self.get_event_log_raw()).expect("Malformed Event Log")
     }
@@ -261,6 +270,48 @@ impl Room {
         js_log.into()
     }
 
+    /// Get all objects at a position.
+    ///
+    /// [Screeps documentation](https://docs.screeps.com/api/#Room.lookAt)
+    pub fn look_at(&self, target: &RoomPosition) -> Vec<LookResult> {
+        self.look_at_internal(target)
+            .iter()
+            .map(LookResult::from_jsvalue_unknown_type)
+            .collect()
+    }
+
+    /// Get all objects at the given room coordinates.
+    ///
+    /// [Screeps documentation](https://docs.screeps.com/api/#Room.lookAt)
+    pub fn look_at_xy(&self, x: u8, y: u8) -> Vec<LookResult> {
+        self.look_at_xy_internal(x, y)
+            .iter()
+            .map(LookResult::from_jsvalue_unknown_type)
+            .collect()
+    }
+
+    /// Get all objects in a certain area.
+    ///
+    /// [Screeps documentation](https://docs.screeps.com/api/#Room.lookAtArea)
+    pub fn look_at_area(
+        &self,
+        top_y: u8,
+        left_x: u8,
+        bottom_y: u8,
+        right_x: u8,
+    ) -> Vec<PositionedLookResult> {
+        self.look_at_area_internal(top_y, left_x, bottom_y, right_x, true)
+            .map(|arr| {
+                arr.iter()
+                    .map(PositionedLookResult::from_jsvalue_unknown_type)
+                    .collect()
+            })
+            .unwrap_or_else(Vec::new)
+    }
+
+    /// Get all objects of a given type at this position, if any.
+    ///
+    /// [Screeps documentation](https://docs.screeps.com/api/#Room.lookForAt)
     pub fn look_for_at<T, U>(&self, _ty: T, target: &U) -> Vec<T::Item>
     where
         T: LookConstant,
@@ -273,12 +324,39 @@ impl Room {
             .unwrap_or_else(Vec::new)
     }
 
+    /// Get all objects of a given type at the given coordinates, if
+    /// any.
+    ///
+    /// [Screeps documentation](https://docs.screeps.com/api/#Room.lookForAt)
     pub fn look_for_at_xy<T>(&self, _ty: T, x: u8, y: u8) -> Vec<T::Item>
     where
         T: LookConstant,
     {
         self.look_for_at_xy_internal(T::look_code(), x, y)
             .map(|arr| arr.iter().map(T::convert_and_check_item).collect())
+            .unwrap_or_else(Vec::new)
+    }
+
+    /// Get all objects of a certain type in a certain area.
+    ///
+    /// [Screeps documentation](https://docs.screeps.com/api/#Room.lookForAtArea)
+    pub fn look_for_at_area<T>(
+        &self,
+        _ty: T,
+        top_y: u8,
+        left_x: u8,
+        bottom_y: u8,
+        right_x: u8,
+    ) -> Vec<PositionedLookResult>
+    where
+        T: LookConstant,
+    {
+        self.look_for_at_area_internal(T::look_code(), top_y, left_x, bottom_y, right_x, true)
+            .map(|arr| {
+                arr.iter()
+                    .map(|lr| PositionedLookResult::from_jsvalue_with_type(lr, T::look_code()))
+                    .collect()
+            })
             .unwrap_or_else(Vec::new)
     }
 }
@@ -291,7 +369,7 @@ impl PartialEq for Room {
 
 impl Eq for Room {}
 
-impl JsContainerFromValue for Room {
+impl JsCollectionFromValue for Room {
     fn from_value(val: JsValue) -> Self {
         val.unchecked_into()
     }
@@ -569,26 +647,21 @@ where
     }
 }
 
-// #[derive(Clone, Debug, Deserialize, Serialize)]
-// pub struct Step {
-//     pub x: u32,
-//     pub y: u32,
-//     pub dx: i32,
-//     pub dy: i32,
-//     pub direction: Direction,
-// }
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct Step {
+    pub x: u32,
+    pub y: u32,
+    pub dx: i32,
+    pub dy: i32,
+    pub direction: Direction,
+}
 
-// js_deserializable! {Step}
-// js_serializable! {Step}
-
-// #[derive(Debug, Deserialize)]
-// #[serde(untagged)]
-// pub enum Path {
-//     Vectorized(Vec<Step>),
-//     Serialized(String),
-// }
-
-// js_deserializable! {Path}
+#[derive(Debug, Deserialize)]
+#[serde(untagged)]
+pub enum Path {
+    Vectorized(Vec<Step>),
+    Serialized(String),
+}
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Event {
@@ -853,74 +926,3 @@ pub struct PowerEvent {
     pub target_id: String,
     pub power: PowerType,
 }
-
-// pub enum LookResult {
-//     Creep(Creep),
-//     Energy(Resource),
-//     Resource(Resource),
-//     Source(Source),
-//     Mineral(Mineral),
-//     Deposit(Deposit),
-//     Structure(Structure),
-//     Flag(Flag),
-//     ConstructionSite(ConstructionSite),
-//     Nuke(Nuke),
-//     Terrain(Terrain),
-//     Tombstone(Tombstone),
-//     PowerCreep(PowerCreep),
-//     Ruin(Ruin),
-// }
-
-// impl TryFrom<Value> for LookResult {
-//     type Error = ConversionError;
-
-//     fn try_from(v: Value) -> Result<LookResult, Self::Error> {
-//         let look_type = js! (
-//             return __look_str_to_num(@{&v}.type);
-//         )
-//         .try_into()?;
-
-//         let lr = match look_type {
-//             Look::Creeps => LookResult::Creep(js_unwrap_ref!(@{v}.creep)),
-//             Look::Energy => LookResult::Energy(js_unwrap_ref!(@{v}.energy)),
-//             Look::Resources =>
-// LookResult::Resource(js_unwrap_ref!(@{v}.resource)),
-// Look::Sources => LookResult::Source(js_unwrap_ref!(@{v}.source)),
-// Look::Minerals => LookResult::Mineral(js_unwrap_ref!(@{v}.mineral)),
-//             Look::Deposits =>
-// LookResult::Deposit(js_unwrap_ref!(@{v}.deposit)),
-// Look::Structures => LookResult::Structure(js_unwrap_ref!(@{v}.structure)),
-//             Look::Flags => LookResult::Flag(js_unwrap_ref!(@{v}.flag)),
-//             Look::ConstructionSites => {
-//
-// LookResult::ConstructionSite(js_unwrap_ref!(@{v}.constructionSite))
-//             }
-//             Look::Nukes => LookResult::Nuke(js_unwrap_ref!(@{v}.nuke)),
-//             Look::Terrain =>
-// LookResult::Terrain(js_unwrap!(__terrain_str_to_num(@{v}.terrain))),
-//             Look::Tombstones =>
-// LookResult::Tombstone(js_unwrap_ref!(@{v}.tombstone)),
-// Look::PowerCreeps => LookResult::PowerCreep(js_unwrap_ref!(@{v}.powerCreep)),
-//             Look::Ruins => LookResult::Ruin(js_unwrap_ref!(@{v}.ruin)),
-//         };
-//         Ok(lr)
-//     }
-// }
-
-// pub struct PositionedLookResult {
-//     pub x: u32,
-//     pub y: u32,
-//     pub look_result: LookResult,
-// }
-
-// impl TryFrom<Value> for PositionedLookResult {
-//     type Error = ConversionError;
-
-//     fn try_from(v: Value) -> Result<PositionedLookResult, Self::Error> {
-//         let x: u32 = js!(return @{&v}.x;).try_into()?;
-//         let y: u32 = js!(return @{&v}.y;).try_into()?;
-//         let look_result: LookResult = v.try_into()?;
-
-//         Ok(PositionedLookResult { x, y, look_result })
-//     }
-// }

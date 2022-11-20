@@ -1,6 +1,6 @@
 use crate::{
     constants::{ReturnCode, StructureType},
-    containers::JsContainerFromValue,
+    js_collections::JsCollectionFromValue,
     objects::{Owner, RoomObject},
     prelude::*,
 };
@@ -14,7 +14,7 @@ extern "C" {
     ///
     /// [Screeps documentation](https://docs.screeps.com/api/#ConstructionSite)
     #[wasm_bindgen(extends = RoomObject)]
-    #[derive(Clone)]
+    #[derive(Clone, Debug)]
     pub type ConstructionSite;
 
     /// The Object ID of the [`ConstructionSite`], or `None` if it was created
@@ -69,7 +69,7 @@ impl MaybeHasNativeId for ConstructionSite {
     }
 }
 
-impl JsContainerFromValue for ConstructionSite {
+impl JsCollectionFromValue for ConstructionSite {
     fn from_value(val: JsValue) -> Self {
         val.unchecked_into()
     }

@@ -1,6 +1,6 @@
 use crate::{
     constants::Color,
-    containers::JsContainerFromValue,
+    js_collections::JsCollectionFromValue,
     objects::{RoomObject, RoomPosition},
 };
 use js_sys::JsString;
@@ -16,7 +16,7 @@ extern "C" {
     ///
     /// [`FLAGS_LIMIT`]: crate::constants::FLAGS_LIMIT
     #[wasm_bindgen(extends = RoomObject)]
-    #[derive(Clone)]
+    #[derive(Clone, Debug)]
     pub type Flag;
 
     /// Primary color of the flag.
@@ -62,7 +62,7 @@ extern "C" {
     pub fn set_position(this: &Flag, pos: RoomPosition);
 }
 
-impl JsContainerFromValue for Flag {
+impl JsCollectionFromValue for Flag {
     fn from_value(val: JsValue) -> Self {
         val.unchecked_into()
     }

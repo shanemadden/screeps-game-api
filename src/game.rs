@@ -3,6 +3,12 @@
 //! This contains all functionality from the `Game` object in Screeps. That
 //! generally means all state which is true this tick throughout the world.
 //!
+//! # Safety
+//!
+//! All returned game objects must be used only during the tick they are
+//! retreived or resolved. They are considered "stale" on subsequent ticks, and
+//! the behavior of stale game objects is undefined.
+//!
 //! [Screeps documentation](http://docs.screeps.com/api/#Game)
 
 use js_sys::{JsString, Object};
@@ -11,9 +17,9 @@ use wasm_bindgen::prelude::*;
 
 use crate::{
     constants::IntershardResourceType,
-    containers::JsHashMap,
-    local::{JsObjectId, ObjectId, RawObjectId},
-    ConstructionSite, Creep, Flag, PowerCreep, RoomName, StructureObject, StructureSpawn,
+    js_collections::{JsHashMap, JsObjectId},
+    local::{ObjectId, RawObjectId},
+    AccountPowerCreep, ConstructionSite, Creep, Flag, RoomName, StructureObject, StructureSpawn,
 };
 
 pub mod cpu;
@@ -98,14 +104,11 @@ pub fn flags() -> JsHashMap<String, Flag> {
     Game::flags().into()
 }
 
-/// Get a [`JsHashMap<String, PowerCreep>`] with all of your power creeps, which
-/// has power creep names as keys.
-///
-/// Note that these power creeps may not be spawned on the current shard,
-/// and will not have a position or id if they are not.
+/// Get a [`JsHashMap<String, AccountPowerCreep>`] with all of your power
+/// creeps, which has power creep names as keys.
 ///
 /// [Screeps documentation](https://docs.screeps.com/api/#Game.powerCreeps)
-pub fn power_creeps() -> JsHashMap<String, PowerCreep> {
+pub fn power_creeps() -> JsHashMap<String, AccountPowerCreep> {
     Game::power_creeps().into()
 }
 

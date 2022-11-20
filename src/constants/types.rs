@@ -1,5 +1,5 @@
 //! `*Type` constants.
-
+use crate::{JsCollectionFromValue, JsCollectionIntoValue};
 use enum_iterator::IntoEnumIterator;
 use num_derive::FromPrimitive;
 use num_traits::FromPrimitive;
@@ -343,7 +343,7 @@ pub enum ResourceType {
     #[cfg(feature = "symbols")]
     SymbolRes = "symbol_res",
     // sin/sim mismatch is intended and present in the mod:
-    // https://github.com/screeps/mod-season2/blob/master/src/resources.js#L23
+    // https://github.com/screeps/mod-season2/blob/3dfaa8f6214b2610dbe2a700c6287a10e7960ae8/src/resources.js#L23
     #[cfg(feature = "symbols")]
     SymbolSin = "symbol_sim",
     #[cfg(feature = "symbols")]
@@ -601,6 +601,24 @@ pub enum PowerType {
     Fortify = 17,
     OperateController = 18,
     OperateFactory = 19,
+}
+
+impl JsCollectionFromValue for PowerType {
+    fn from_value(val: JsValue) -> Self {
+        let power_type_id = if let Some(val) = val.as_string() {
+            val.parse::<u32>().expect("expected parseable u32 string")
+        } else {
+            val.as_f64().expect("expected number value") as u32
+        };
+
+        Self::from_u32(power_type_id).expect("unknown power type")
+    }
+}
+
+impl JsCollectionIntoValue for PowerType {
+    fn into_value(self) -> JsValue {
+        JsValue::from_f64(self as u32 as f64)
+    }
 }
 
 /// Translates the `EFFECT_*` constants, which are natural effect types
