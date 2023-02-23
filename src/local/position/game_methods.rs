@@ -1,11 +1,15 @@
 //! Game method implementations on `Position`
 use crate::{
     constants::{
-        Color, ErrorCode, FindConstant, LookConstant, LookResult, ReturnCode, StructureType,
+        look::{LookConstant, LookResult},
+        Color, ErrorCode, FindConstant, ReturnCode, StructureType,
     },
-    objects::RoomPosition,
+    local::{RoomCoordinate, RoomName},
+    objects::{CostMatrix, FindPathOptions, Path, RoomPosition},
+    pathfinder::RoomCostResult,
+    prelude::*,
 };
-use js_sys::{Array, JsString, Object};
+use js_sys::{JsString, Object};
 use wasm_bindgen::prelude::*;
 
 use super::Position;
@@ -17,6 +21,7 @@ impl Position {
     /// [Screeps documentation](https://docs.screeps.com/api/#RoomPosition.createConstructionSite)
     ///
     /// [`ConstructionSite`]: crate::objects::ConstructionSite
+    /// [`StructureSpawn`]: crate::objects::StructureSpawn
     #[inline]
     pub fn create_construction_site(
         self,
@@ -42,10 +47,13 @@ impl Position {
         RoomPosition::from(self).create_flag(name, color, secondary_color)
     }
 
-    /// Find the closest object by path among an [`Array`] of objects, or among
-    /// a [`FindType`] to search for all objects of that type in the room.
+    // todo typed options and version that allows passing target roomobjects
+    /// Find the closest object by path among a list of objects, or use
+    /// a [`find` constant] to search for all objects of that type in the room.
     ///
     /// [Screeps documentation](https://docs.screeps.com/api/#RoomPosition.findClosestByPath)
+    ///
+    /// [`find` constant]: crate::constants::find
     #[inline]
     pub fn find_closest_by_path<T>(self, ty: T, options: Option<&Object>) -> Option<T::Item>
     where
@@ -55,11 +63,14 @@ impl Position {
         RoomPosition::from(self).find_closest_by_path(ty, options)
     }
 
-    /// Find the closest object by range among an [`Array`] of objects, or among
-    /// a [`FindType`] to search for all objects of that type in the room. Will
-    /// not work for objects in other rooms.
+    // todo version for passing target roomobjects
+    /// Find the closest object by range among a list of objects, or use
+    /// a [`find` constant] to search for all objects of that type in the room.
+    /// Will not work for objects in other rooms.
     ///
     /// [Screeps documentation](https://docs.screeps.com/api/#RoomPosition.findClosestByRange)
+    ///
+    /// [`find` constant]: crate::constants::find
     #[inline]
     pub fn find_closest_by_range<T>(self, ty: T) -> Option<T::Item>
     where
@@ -68,11 +79,14 @@ impl Position {
         RoomPosition::from(self).find_closest_by_range(ty)
     }
 
-    /// Find all relevant objects within a certain range among an [`Array`] of
-    /// objects, or among a [`FindType`] to search all objects of that type in
-    /// the room.
+    // todo version for passing target roomobjects
+    /// Find all relevant objects within a certain range among a list of
+    /// objects, or use a [`find` constant] to search all objects of that type
+    /// in the room.
     ///
     /// [Screeps documentation](https://docs.screeps.com/api/#RoomPosition.findInRange)
+    ///
+    /// [`find` constant]: crate::constants::find
     #[inline]
     pub fn find_in_range<T>(self, ty: T, range: u8) -> Vec<T::Item>
     where
@@ -86,8 +100,13 @@ impl Position {
     ///
     /// [Screeps documentation](https://docs.screeps.com/api/#RoomPosition.findPathTo)
     #[inline]
-    pub fn find_path_to(self, goal: &JsValue, options: Option<&Object>) -> Array {
-        RoomPosition::from(self).find_path_to(goal, options)
+    pub fn find_path_to<T, F, R>(&self, target: &T, options: Option<FindPathOptions<F, R>>) -> Path
+    where
+        T: HasPosition,
+        F: FnMut(RoomName, CostMatrix) -> R,
+        R: RoomCostResult,
+    {
+        RoomPosition::from(self).find_path_to(target, options)
     }
 
     /// Find a path from this position to the given coordinates in the same
@@ -95,7 +114,16 @@ impl Position {
     ///
     /// [Screeps documentation](https://docs.screeps.com/api/#RoomPosition.findPathTo)
     #[inline]
-    pub fn find_path_to_xy(self, x: u8, y: u8, options: Option<&Object>) -> Array {
+    pub fn find_path_to_xy<F, R>(
+        self,
+        x: RoomCoordinate,
+        y: RoomCoordinate,
+        options: Option<FindPathOptions<F, R>>,
+    ) -> Path
+    where
+        F: FnMut(RoomName, CostMatrix) -> R,
+        R: RoomCostResult,
+    {
         RoomPosition::from(self).find_path_to_xy(x, y, options)
     }
 

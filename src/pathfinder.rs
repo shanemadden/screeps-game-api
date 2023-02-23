@@ -140,19 +140,15 @@ impl SearchResults {
 
 pub trait RoomCostResult: Into<JsValue> {}
 
+#[derive(Default)]
 pub enum MultiRoomCostResult {
     CostMatrix(CostMatrix),
     Impassable,
+    #[default]
     Default,
 }
 
 impl RoomCostResult for MultiRoomCostResult {}
-
-impl Default for MultiRoomCostResult {
-    fn default() -> Self {
-        MultiRoomCostResult::Default
-    }
-}
 
 impl From<MultiRoomCostResult> for JsValue {
     fn from(v: MultiRoomCostResult) -> JsValue {
@@ -164,18 +160,14 @@ impl From<MultiRoomCostResult> for JsValue {
     }
 }
 
+#[derive(Default)]
 pub enum SingleRoomCostResult {
     CostMatrix(CostMatrix),
+    #[default]
     Default,
 }
 
 impl RoomCostResult for SingleRoomCostResult {}
-
-impl Default for SingleRoomCostResult {
-    fn default() -> Self {
-        SingleRoomCostResult::Default
-    }
-}
 
 impl From<SingleRoomCostResult> for JsValue {
     fn from(v: SingleRoomCostResult) -> JsValue {

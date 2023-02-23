@@ -1,7 +1,7 @@
 use std::borrow::Borrow;
 use wasm_bindgen::prelude::*;
 
-use crate::{local::LocalCostMatrix, prototypes::COST_MATRIX_PROTOTYPE};
+use crate::{constants::ROOM_SIZE, local::LocalCostMatrix, prototypes::COST_MATRIX_PROTOTYPE};
 
 use js_sys::{Array, Object, Uint8Array};
 
@@ -19,11 +19,6 @@ extern "C" {
     /// [Screeps documentation](https://docs.screeps.com/api/#PathFinder.CostMatrix.constructor)
     #[wasm_bindgen(constructor, js_namespace = PathFinder)]
     pub fn new() -> CostMatrix;
-
-    // TODO make a new_with_bits
-    // https://github.com/rustwasm/wasm-bindgen/blob/master/crates/js-sys/tests/wasm/Object.rs#L36
-    //     #[wasm_bindgen(js_name = prototype, js_namespace = Foo)]
-    //     static FOO_PROTOTYPE: Object;
 
     /// Gets a reference to the [`Uint8Array`] underlying this [`CostMatrix`].
     #[wasm_bindgen(method, getter = _bits)]
@@ -110,8 +105,7 @@ pub trait CostMatrixSet {
 
 #[inline]
 fn pos_as_idx(x: u8, y: u8) -> usize {
-    //TODO: wiarchbe: Factor out constant!
-    (x as usize) * 50 + (y as usize)
+    (x as usize) * ROOM_SIZE as usize + (y as usize)
 }
 
 impl CostMatrixSet for CostMatrix {
