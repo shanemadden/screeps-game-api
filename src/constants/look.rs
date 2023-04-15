@@ -7,14 +7,15 @@
 //! constant, and then just referring to the constants relative to the module.
 //!
 //! [`Room::look_for_at`]: crate::objects::Room::look_for_at
-use crate::{constants::Terrain, enums::StructureObject, objects::*};
-use enum_iterator::IntoEnumIterator;
+use enum_iterator::Sequence;
 use serde::{Deserialize, Serialize};
 use wasm_bindgen::{prelude::*, JsCast};
 
+use crate::{constants::Terrain, enums::StructureObject, objects::*};
+
 /// Translates `LOOK_*` constants.
 #[wasm_bindgen]
-#[derive(Copy, Clone, Debug, PartialEq, Eq, Hash, Serialize, Deserialize, IntoEnumIterator)]
+#[derive(Copy, Clone, Debug, PartialEq, Eq, Hash, Serialize, Deserialize, Sequence)]
 pub enum Look {
     Creeps = "creep",
     Energy = "energy",

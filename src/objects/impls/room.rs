@@ -1,10 +1,13 @@
+use std::{convert::TryInto, fmt};
+
+use js_sys::{Array, JsString, Object};
 use num_traits::*;
 use serde::{
     de::{self, MapAccess, Visitor},
     Deserialize, Deserializer, Serialize,
 };
 use serde_repr::{Deserialize_repr, Serialize_repr};
-use std::{convert::TryInto, fmt};
+use wasm_bindgen::{prelude::*, JsCast};
 
 use crate::{
     constants::{
@@ -14,12 +17,10 @@ use crate::{
     js_collections::JsCollectionFromValue,
     local::LodashFilter,
     objects::*,
+    pathfinder::RoomCostResult,
     prelude::*,
-    FindConstant, RoomCostResult, RoomName,
+    FindConstant, RoomName,
 };
-
-use js_sys::{Array, JsString, Object};
-use wasm_bindgen::{prelude::*, JsCast};
 
 #[wasm_bindgen]
 extern "C" {

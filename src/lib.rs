@@ -56,13 +56,7 @@ pub(crate) mod prototypes;
 pub mod raw_memory;
 pub mod traits;
 
-pub use crate::{
-    constants::*, enums::*, game::*, js_collections::*, local::*, objects::*, pathfinder::*,
-    raw_memory::*, traits::*,
-};
-
-#[cfg(feature = "inter-shard-memory")]
-pub use crate::inter_shard_memory::*;
+pub use crate::{constants::*, enums::*, js_collections::*, local::*, objects::*, traits::*};
 
 /// Traits which implement base functionalities for Screeps types.
 ///
@@ -80,5 +74,5 @@ pub use crate::inter_shard_memory::*;
 ///
 /// This module contains all base functionality traits, and no structures.
 pub mod prelude {
-    pub use crate::traits::*;
+    pub use crate::{js_collections::*, traits::*};
 }

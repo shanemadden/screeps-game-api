@@ -1,6 +1,18 @@
 Unreleased
 ==========
 
+- Implement `TryFrom<JsString>` for `RawObjectId`
+- Implement `FromStr` for `JsObjectId`
+- Move `crate::inter_shard_memory::InterShardMemory::*` to `crate::inter_shard_memory::*` and move
+  `crate::raw_memory::RawMemory::*` to `crate::raw_memory::*` for consistency (breaking)
+- Update `serde-wasm-bindgen` to 0.5
+- Update `enum-iterator` to 1.4 (breaking; `IntoEnumIterator` trait replaced with `Sequence`)
+- Implement `BODYPARTS_ALL`, `RESOURCES_ALL`, and `COLORS_ALL` constants using `enum-iterator`
+- Remove re-exports of `game::*`, `pathfinder::*`, and `raw_memory::*` to resolve name conflict
+  and simplify crate namespace (breaking)
+- Implement `std::error::Error` for `OutOfBoundsError`, to make it more ergonomic to use with
+  other error types
+
 0.10.0 (2023-03-13)
 ===================
 

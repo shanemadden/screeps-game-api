@@ -1,18 +1,19 @@
 //! Various constants translated as small enums.
-
-use crate::constants::find::Find;
-use enum_iterator::IntoEnumIterator;
-use js_sys::JsString;
-use num_derive::FromPrimitive;
-use num_traits::FromPrimitive;
-use serde::{Deserialize, Serialize};
-use serde_repr::{Deserialize_repr, Serialize_repr};
 use std::{
     convert::{Infallible, TryFrom},
     fmt,
     str::FromStr,
 };
+
+use enum_iterator::Sequence;
+use js_sys::JsString;
+use num_derive::FromPrimitive;
+use num_traits::FromPrimitive;
+use serde::{Deserialize, Serialize};
+use serde_repr::{Deserialize_repr, Serialize_repr};
 use wasm_bindgen::prelude::*;
+
+use crate::constants::find::Find;
 
 // Bindgen does not correctly handle i8 negative return values. Use custom
 // return values.
@@ -132,7 +133,7 @@ impl From<Result<(), ErrorCode>> for ReturnCode {
     FromPrimitive,
     Serialize_repr,
     Deserialize_repr,
-    IntoEnumIterator,
+    Sequence,
 )]
 #[repr(u8)]
 pub enum Direction {
@@ -215,7 +216,7 @@ impl fmt::Display for Direction {
     FromPrimitive,
     Serialize_repr,
     Deserialize_repr,
-    IntoEnumIterator,
+    Sequence,
 )]
 #[repr(u8)]
 pub enum ExitDirection {
@@ -249,7 +250,7 @@ impl From<ExitDirection> for Direction {
     }
 }
 
-/// Translates `COLOR_*` constants.
+/// Translates `COLOR_*` and `COLORS_ALL` constants.
 #[wasm_bindgen]
 #[derive(
     Debug,
@@ -261,7 +262,7 @@ impl From<ExitDirection> for Direction {
     Hash,
     Deserialize_repr,
     Serialize_repr,
-    IntoEnumIterator,
+    Sequence,
 )]
 #[repr(u8)]
 pub enum Color {
@@ -289,7 +290,7 @@ pub enum Color {
     FromPrimitive,
     Serialize_repr,
     Deserialize_repr,
-    IntoEnumIterator,
+    Sequence,
 )]
 #[repr(u8)]
 pub enum Terrain {
@@ -322,9 +323,9 @@ impl Terrain {
     }
 }
 
-/// Translates body part constants.
+/// Translates body part type and `BODYPARTS_ALL` constants
 #[wasm_bindgen]
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Deserialize, Serialize)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Deserialize, Serialize, Sequence)]
 pub enum Part {
     Move = "move",
     Work = "work",
@@ -386,7 +387,7 @@ impl FromStr for Part {
     Hash,
     Serialize_repr,
     Deserialize_repr,
-    IntoEnumIterator,
+    Sequence,
 )]
 #[repr(u8)]
 pub enum Density {
@@ -438,13 +439,13 @@ impl Density {
     }
 
     pub fn iter_values() -> impl Iterator<Item = Density> {
-        <Density as enum_iterator::IntoEnumIterator>::into_enum_iter()
+        enum_iterator::all::<Density>()
     }
 }
 
 /// Translates `ORDER_*` constants.
 #[wasm_bindgen]
-#[derive(Copy, Clone, Debug, PartialEq, Eq, Hash, Serialize, Deserialize, IntoEnumIterator)]
+#[derive(Copy, Clone, Debug, PartialEq, Eq, Hash, Serialize, Deserialize, Sequence)]
 pub enum OrderType {
     Sell = "sell",
     Buy = "buy",

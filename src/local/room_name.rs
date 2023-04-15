@@ -1,7 +1,7 @@
 use std::{
     cmp::{Ord, Ordering, PartialOrd},
     convert::TryFrom,
-    error,
+    error::Error,
     fmt::{self, Write},
     ops,
     str::FromStr,
@@ -200,7 +200,7 @@ pub enum RoomNameConversionError {
     ParseError { err: RoomNameParseError },
 }
 
-impl error::Error for RoomNameConversionError {}
+impl Error for RoomNameConversionError {}
 
 impl fmt::Display for RoomNameConversionError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
@@ -311,7 +311,7 @@ impl ops::Sub<RoomName> for RoomName {
 impl FromStr for RoomName {
     type Err = RoomNameParseError;
 
-    fn from_str(s: &str) -> Result<Self, RoomNameParseError> {
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
         parse_to_coords(s)
             .map_err(|()| RoomNameParseError::new(s))
             .and_then(|(x, y)| RoomName::from_coords(x, y))
@@ -393,7 +393,7 @@ impl RoomNameParseError {
     }
 }
 
-impl error::Error for RoomNameParseError {}
+impl Error for RoomNameParseError {}
 
 impl fmt::Display for RoomNameParseError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
