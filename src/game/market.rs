@@ -15,43 +15,43 @@ extern "C" {
     #[wasm_bindgen(js_name = "market")]
     type Market;
 
-    #[wasm_bindgen(js_namespace = ["Game"], js_class = "market", static_method_of = Market, getter, js_name = credits)]
+    #[wasm_bindgen(js_namespace = ["Game"], js_class = "market", static_method_of = Market, structural, getter, js_name = credits)]
     fn credits() -> f64;
 
-    #[wasm_bindgen(js_namespace = ["Game"], js_class = "market", static_method_of = Market, getter, js_name = incomingTransactions)]
+    #[wasm_bindgen(js_namespace = ["Game"], js_class = "market", static_method_of = Market, structural, getter, js_name = incomingTransactions)]
     fn incoming_transactions() -> Array;
 
-    #[wasm_bindgen(js_namespace = ["Game"], js_class = "market", static_method_of = Market, getter, js_name = outgoingTransactions)]
+    #[wasm_bindgen(js_namespace = ["Game"], js_class = "market", static_method_of = Market, structural, getter, js_name = outgoingTransactions)]
     fn outgoing_transactions() -> Array;
 
-    #[wasm_bindgen(js_namespace = ["Game"], js_class = "market", static_method_of = Market, getter, js_name = orders)]
+    #[wasm_bindgen(js_namespace = ["Game"], js_class = "market", static_method_of = Market, structural, getter, js_name = orders)]
     fn orders() -> Object;
 
-    #[wasm_bindgen(js_namespace = ["Game"], js_class = "market", static_method_of = Market, js_name = calcTransactionCost)]
+    #[wasm_bindgen(js_namespace = ["Game"], js_class = "market", static_method_of = Market, structural, js_name = calcTransactionCost)]
     fn calc_transaction_cost(amount: u32, room_1: &JsString, room_2: &JsString) -> u32;
 
-    #[wasm_bindgen(js_namespace = ["Game"], js_class = "market", static_method_of = Market, js_name = cancelOrder)]
+    #[wasm_bindgen(js_namespace = ["Game"], js_class = "market", static_method_of = Market, structural, js_name = cancelOrder)]
     fn cancel_order(order_id: &JsString) -> ReturnCode;
 
-    #[wasm_bindgen(js_namespace = ["Game"], js_class = "market", static_method_of = Market, js_name = changeOrderPrice)]
+    #[wasm_bindgen(js_namespace = ["Game"], js_class = "market", static_method_of = Market, structural, js_name = changeOrderPrice)]
     fn change_order_price(order_id: &JsString, new_price: f64) -> ReturnCode;
 
-    #[wasm_bindgen(js_namespace = ["Game"], js_class = "market", static_method_of = Market, js_name = createOrder)]
+    #[wasm_bindgen(js_namespace = ["Game"], js_class = "market", static_method_of = Market, structural, js_name = createOrder)]
     fn create_order(order_parameters: &Object) -> ReturnCode;
 
-    #[wasm_bindgen(js_namespace = ["Game"], js_class = "market", static_method_of = Market, js_name = deal)]
+    #[wasm_bindgen(js_namespace = ["Game"], js_class = "market", static_method_of = Market, structural, js_name = deal)]
     fn deal(order_id: &JsString, amount: u32, room_name: Option<&JsString>) -> ReturnCode;
 
-    #[wasm_bindgen(js_namespace = ["Game"], js_class = "market", static_method_of = Market, js_name = extendOrder)]
+    #[wasm_bindgen(js_namespace = ["Game"], js_class = "market", static_method_of = Market, structural, js_name = extendOrder)]
     fn extend_order(order_id: &JsString, add_amount: u32) -> ReturnCode;
 
-    #[wasm_bindgen(js_namespace = ["Game"], js_class = "market", static_method_of = Market, js_name = getAllOrders)]
+    #[wasm_bindgen(js_namespace = ["Game"], js_class = "market", static_method_of = Market, structural, js_name = getAllOrders)]
     fn get_all_orders(filter: Option<&LodashFilter>) -> Array;
 
-    #[wasm_bindgen(js_namespace = ["Game"], js_class = "market", static_method_of = Market, js_name = getHistory)]
+    #[wasm_bindgen(js_namespace = ["Game"], js_class = "market", static_method_of = Market, structural, js_name = getHistory)]
     fn get_history(resource: Option<ResourceType>) -> Option<Array>;
 
-    #[wasm_bindgen(js_namespace = ["Game"], js_class = "market", static_method_of = Market, js_name = getOrderById)]
+    #[wasm_bindgen(js_namespace = ["Game"], js_class = "market", static_method_of = Market, structural, js_name = getOrderById)]
     fn get_order_by_id(order_id: &JsString) -> Option<Order>;
 }
 

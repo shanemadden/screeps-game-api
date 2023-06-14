@@ -21,25 +21,25 @@ extern "C" {
     #[wasm_bindgen(js_name = "map")]
     type Map;
 
-    #[wasm_bindgen(js_namespace = ["Game"], js_class = "map", static_method_of = Map, js_name = describeExits)]
+    #[wasm_bindgen(js_namespace = ["Game"], js_class = "map", static_method_of = Map, structural, js_name = describeExits)]
     fn describe_exits(room_name: &JsString) -> Object;
 
-    #[wasm_bindgen(js_namespace = ["Game"], js_class = "map", static_method_of = Map, js_name = findExit)]
+    #[wasm_bindgen(js_namespace = ["Game"], js_class = "map", static_method_of = Map, structural, js_name = findExit)]
     fn find_exit(from_room: &JsString, to_room: &JsString, options: &JsValue) -> i32;
 
-    #[wasm_bindgen(js_namespace = ["Game"], js_class = "map", static_method_of = Map, js_name = findRoute)]
+    #[wasm_bindgen(js_namespace = ["Game"], js_class = "map", static_method_of = Map, structural, js_name = findRoute)]
     fn find_route(from_room: &JsString, to_room: &JsString, options: &JsValue) -> JsValue;
 
-    #[wasm_bindgen(js_namespace = ["Game"], js_class = "map", static_method_of = Map, js_name = getRoomLinearDistance)]
+    #[wasm_bindgen(js_namespace = ["Game"], js_class = "map", static_method_of = Map, structural, js_name = getRoomLinearDistance)]
     fn get_room_linear_distance(room_1: &JsString, room_2: &JsString, continuous: bool) -> u32;
 
-    #[wasm_bindgen(js_namespace = ["Game"], js_class = "map", static_method_of = Map, js_name = getRoomTerrain)]
+    #[wasm_bindgen(js_namespace = ["Game"], js_class = "map", static_method_of = Map, structural, js_name = getRoomTerrain)]
     fn get_room_terrain(room_name: &JsString) -> RoomTerrain;
 
-    #[wasm_bindgen(js_namespace = ["Game"], js_class = "map", static_method_of = Map, js_name = getWorldSize)]
+    #[wasm_bindgen(js_namespace = ["Game"], js_class = "map", static_method_of = Map, structural, js_name = getWorldSize)]
     fn get_world_size() -> u32;
 
-    #[wasm_bindgen(js_namespace = ["Game"], js_class = "map", static_method_of = Map, js_name = getRoomStatus, catch)]
+    #[wasm_bindgen(js_namespace = ["Game"], js_class = "map", static_method_of = Map, structural, js_name = getRoomStatus, catch)]
     fn get_room_status(room_name: &JsString) -> Result<JsRoomStatusResult, JsValue>;
 }
 
@@ -88,10 +88,10 @@ extern "C" {
     #[wasm_bindgen]
     pub type JsRoomStatusResult;
 
-    #[wasm_bindgen(method, getter = status)]
+    #[wasm_bindgen(method, structural, getter = status)]
     pub fn status(this: &JsRoomStatusResult) -> RoomStatus;
 
-    #[wasm_bindgen(method, getter = timestamp)]
+    #[wasm_bindgen(method, structural, getter = timestamp)]
     pub fn timestamp(this: &JsRoomStatusResult) -> Option<f64>;
 }
 
@@ -159,7 +159,7 @@ extern "C" {
     /// Route callback, which determines the cost of entering a given room (the
     /// first parameter) from a given neighbor room (the second parameter), or
     /// [`f64::INFINITY`] to block entry into the room.
-    #[wasm_bindgen(method, setter = routeCallback)]
+    #[wasm_bindgen(method, structural, setter = routeCallback)]
     pub fn route_callback(
         this: &JsFindRouteOptions,
         callback: &Closure<dyn FnMut(JsString, JsString) -> f64>,

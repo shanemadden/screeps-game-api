@@ -21,45 +21,45 @@ extern "C" {
     /// this tick.
     ///
     /// [Screeps documentation](https://docs.screeps.com/api/#ConstructionSite.id)
-    #[wasm_bindgen(method, getter = id)]
+    #[wasm_bindgen(method, final, getter = id)]
     fn id_internal(this: &ConstructionSite) -> Option<JsString>;
 
     /// Whether you own the [`ConstructionSite`].
     ///
     /// [Screeps documentation](https://docs.screeps.com/api/#ConstructionSite.my)
-    #[wasm_bindgen(method, getter)]
+    #[wasm_bindgen(method, final, getter)]
     pub fn my(this: &ConstructionSite) -> bool;
 
     /// The [`Owner`] of this construction site, which contains the owner's
     /// username.
     ///
     /// [Screeps documentation](https://docs.screeps.com/api/#ConstructionSite.owner)
-    #[wasm_bindgen(method, getter)]
+    #[wasm_bindgen(method, final, getter)]
     pub fn owner(this: &ConstructionSite) -> Owner;
 
     /// The current progress toward completion of the structure being built.
     ///
     /// [Screeps documentation](https://docs.screeps.com/api/#ConstructionSite.progress)
-    #[wasm_bindgen(method, getter)]
+    #[wasm_bindgen(method, final, getter)]
     pub fn progress(this: &ConstructionSite) -> u32;
 
     /// The total progess toward constuction progress needed for the structure
     /// to be completed.
     ///
     /// [Screeps documentation](https://docs.screeps.com/api/#ConstructionSite.progressTotal)
-    #[wasm_bindgen(method, getter = progressTotal)]
+    #[wasm_bindgen(method, final, getter = progressTotal)]
     pub fn progress_total(this: &ConstructionSite) -> u32;
 
     /// The type of structure being constructed.
     ///
     /// [Screeps documentation](https://docs.screeps.com/api/#Structure.structureType)
-    #[wasm_bindgen(method, getter = structureType)]
+    #[wasm_bindgen(method, final, getter = structureType)]
     pub fn structure_type(this: &ConstructionSite) -> StructureType;
 
     /// Remove the [`ConstructionSite`].
     ///
     /// [Screeps documentation](https://docs.screeps.com/api/#ConstructionSite.remove)
-    #[wasm_bindgen(method)]
+    #[wasm_bindgen(method, final)]
     pub fn remove(this: &ConstructionSite) -> ReturnCode;
 }
 

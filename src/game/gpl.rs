@@ -10,13 +10,13 @@ extern "C" {
     #[wasm_bindgen(js_name = "gpl")]
     type Gpl;
 
-    #[wasm_bindgen(js_namespace = ["Game"], js_class = "gpl", static_method_of = Gpl, getter, js_name = level)]
+    #[wasm_bindgen(js_namespace = ["Game"], js_class = "gpl", static_method_of = Gpl, structural, getter, js_name = level)]
     fn level() -> u32;
 
-    #[wasm_bindgen(js_namespace = ["Game"], js_class = "gpl", static_method_of = Gpl, getter, js_name = progress)]
+    #[wasm_bindgen(js_namespace = ["Game"], js_class = "gpl", static_method_of = Gpl, structural, getter, js_name = progress)]
     fn progress() -> f64;
 
-    #[wasm_bindgen(js_namespace = ["Game"], js_class = "gpl", static_method_of = Gpl, getter, js_name = progressTotal)]
+    #[wasm_bindgen(js_namespace = ["Game"], js_class = "gpl", static_method_of = Gpl, structural, getter, js_name = progressTotal)]
     fn progress_total() -> f64;
 }
 

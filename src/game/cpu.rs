@@ -11,41 +11,41 @@ extern "C" {
     #[wasm_bindgen(js_name = "cpu")]
     type Cpu;
 
-    #[wasm_bindgen(js_namespace = ["Game"], js_class = "cpu", static_method_of = Cpu, getter, js_name = limit)]
+    #[wasm_bindgen(js_namespace = ["Game"], js_class = "cpu", static_method_of = Cpu, structural, getter, js_name = limit)]
     fn limit() -> u32;
 
-    #[wasm_bindgen(js_namespace = ["Game"], js_class = "cpu", static_method_of = Cpu, getter, js_name = tickLimit)]
+    #[wasm_bindgen(js_namespace = ["Game"], js_class = "cpu", static_method_of = Cpu, structural, getter, js_name = tickLimit)]
     fn tick_limit() -> f64;
 
-    #[wasm_bindgen(js_namespace = ["Game"], js_class = "cpu", static_method_of = Cpu, getter, js_name = bucket)]
+    #[wasm_bindgen(js_namespace = ["Game"], js_class = "cpu", static_method_of = Cpu, structural, getter, js_name = bucket)]
     fn bucket() -> i32;
 
-    #[wasm_bindgen(js_namespace = ["Game"], js_class = "cpu", static_method_of = Cpu, js_name = shardLimits)]
+    #[wasm_bindgen(js_namespace = ["Game"], js_class = "cpu", static_method_of = Cpu, structural, js_name = shardLimits)]
     fn shard_limits() -> Object;
 
-    #[wasm_bindgen(js_namespace = ["Game"], js_class = "cpu", static_method_of = Cpu, getter, js_name = unlocked)]
+    #[wasm_bindgen(js_namespace = ["Game"], js_class = "cpu", static_method_of = Cpu, structural, getter, js_name = unlocked)]
     fn unlocked() -> bool;
 
-    #[wasm_bindgen(js_namespace = ["Game"], js_class = "cpu", static_method_of = Cpu, getter, js_name = unlockedTime)]
+    #[wasm_bindgen(js_namespace = ["Game"], js_class = "cpu", static_method_of = Cpu, structural, getter, js_name = unlockedTime)]
     fn unlocked_time() -> Option<u64>;
 
-    #[wasm_bindgen(js_namespace = ["Game"], js_class = "cpu", static_method_of = Cpu, js_name = getHeapStatistics)]
+    #[wasm_bindgen(js_namespace = ["Game"], js_class = "cpu", static_method_of = Cpu, structural, js_name = getHeapStatistics)]
     fn get_heap_statistics() -> HeapStatistics;
 
-    #[wasm_bindgen(js_namespace = ["Game"], js_class = "cpu", static_method_of = Cpu, js_name = getUsed)]
+    #[wasm_bindgen(js_namespace = ["Game"], js_class = "cpu", static_method_of = Cpu, structural, js_name = getUsed)]
     fn get_used() -> f64;
 
-    #[wasm_bindgen(js_namespace = ["Game"], js_class = "cpu", static_method_of = Cpu, js_name = halt)]
+    #[wasm_bindgen(js_namespace = ["Game"], js_class = "cpu", static_method_of = Cpu, structural, js_name = halt)]
     fn halt();
 
-    #[wasm_bindgen(js_namespace = ["Game"], js_class = "cpu", static_method_of = Cpu, js_name = setShardLimits)]
+    #[wasm_bindgen(js_namespace = ["Game"], js_class = "cpu", static_method_of = Cpu, structural, js_name = setShardLimits)]
     fn set_shard_limits(limits: &Object) -> ReturnCode;
 
-    #[wasm_bindgen(js_namespace = ["Game"], js_class = "cpu", static_method_of = Cpu, js_name = unlock)]
+    #[wasm_bindgen(js_namespace = ["Game"], js_class = "cpu", static_method_of = Cpu, structural, js_name = unlock)]
     fn unlock() -> ReturnCode;
 
     #[cfg(feature = "generate-pixel")]
-    #[wasm_bindgen(js_namespace = ["Game"], js_class = "cpu", static_method_of = Cpu, js_name = generatePixel)]
+    #[wasm_bindgen(js_namespace = ["Game"], js_class = "cpu", static_method_of = Cpu, structural, js_name = generatePixel)]
     fn generate_pixel() -> ReturnCode;
 }
 
@@ -155,44 +155,44 @@ extern "C" {
     pub type HeapStatistics;
 
     /// The total heap consumed.
-    #[wasm_bindgen(method, getter)]
+    #[wasm_bindgen(method, getter, structural)]
     pub fn total_heap_size(this: &HeapStatistics) -> u32;
 
     /// The total heap consumed by executable code.
-    #[wasm_bindgen(method, getter)]
+    #[wasm_bindgen(method, getter, structural)]
     pub fn total_heap_size_executable(this: &HeapStatistics) -> u32;
 
     /// The total amount of heap committed to memory.
-    #[wasm_bindgen(method, getter)]
+    #[wasm_bindgen(method, getter, structural)]
     pub fn total_physical_size(this: &HeapStatistics) -> u32;
 
     /// Amount of heap available for allocation.
-    #[wasm_bindgen(method, getter)]
+    #[wasm_bindgen(method, getter, structural)]
     pub fn total_available_size(this: &HeapStatistics) -> u32;
 
     /// Total heap consumed by application data.
-    #[wasm_bindgen(method, getter)]
+    #[wasm_bindgen(method, getter, structural)]
     pub fn used_heap_size(this: &HeapStatistics) -> u32;
 
     /// The allowed limit for total heap memory.
-    #[wasm_bindgen(method, getter)]
+    #[wasm_bindgen(method, getter, structural)]
     pub fn heap_size_limit(this: &HeapStatistics) -> u32;
 
     /// Total amount of memory obtained by malloc.
-    #[wasm_bindgen(method, getter)]
+    #[wasm_bindgen(method, getter, structural)]
     pub fn malloced_memory(this: &HeapStatistics) -> u32;
 
     /// Maximum amount of memory obtained by malloc.
-    #[wasm_bindgen(method, getter)]
+    #[wasm_bindgen(method, gette, structuralr)]
     pub fn peak_malloced_memory(this: &HeapStatistics) -> u32;
 
     /// Whether the virtual machine overwrites memory as it deallocates -
     /// usually 0.
-    #[wasm_bindgen(method, getter)]
+    #[wasm_bindgen(method, getter, structural)]
     pub fn does_zap_garbage(this: &HeapStatistics) -> u32;
 
     /// External allocations that are outside of the v8 heap but still count
     /// against the memory limit.
-    #[wasm_bindgen(method, getter)]
+    #[wasm_bindgen(method, getter, structural)]
     pub fn externally_allocated_size(this: &HeapStatistics) -> u32;
 }

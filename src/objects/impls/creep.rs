@@ -16,6 +16,8 @@ use crate::objects::Reactor;
 
 #[wasm_bindgen]
 extern "C" {
+    // resume adding `final` from here - fix the ordering where it exists, and test
+    // thoroughly onthe methods where it doesn't for some reason
     /// A [`Creep`] unit in the game world.
     ///
     /// [Screeps documentation](https://docs.screeps.com/api/#Creep)

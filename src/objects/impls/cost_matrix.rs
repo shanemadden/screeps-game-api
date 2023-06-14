@@ -19,44 +19,44 @@ extern "C" {
     pub fn new() -> CostMatrix;
 
     /// Gets a reference to the [`Uint8Array`] underlying this [`CostMatrix`].
-    #[wasm_bindgen(method, getter = _bits)]
+    #[wasm_bindgen(method, final, getter = _bits)]
     pub fn get_bits(this: &CostMatrix) -> Uint8Array;
 
     /// Sets a [`Uint8Array`] to this [`CostMatrix`], overwriting any current
     /// contents.
-    #[wasm_bindgen(method, setter = _bits)]
+    #[wasm_bindgen(method, final, setter = _bits)]
     pub fn set_bits(this: &CostMatrix, arr: &Uint8Array);
 
     /// Sets a new value for a specific position in this [`CostMatrix`].
     ///
     /// [Screeps documentation](https://docs.screeps.com/api/#PathFinder.CostMatrix.set)
-    #[wasm_bindgen(method)]
+    #[wasm_bindgen(method, final)]
     pub fn set(this: &CostMatrix, x: u8, y: u8, cost: u8);
 
     /// Get the value of a specific position in this [`CostMatrix`].
     ///
     /// [Screeps documentation](https://docs.screeps.com/api/#PathFinder.CostMatrix.get)
-    #[wasm_bindgen(method)]
+    #[wasm_bindgen(method, final)]
     pub fn get(this: &CostMatrix, x: u8, y: u8) -> u8;
 
     /// Get a new [`CostMatrix`] with data copied from the current one
     ///
     /// [Screeps documentation](https://docs.screeps.com/api/#PathFinder.CostMatrix.clone)
-    #[wasm_bindgen(method)]
+    #[wasm_bindgen(method, final)]
     pub fn clone(this: &CostMatrix) -> CostMatrix;
 
     /// Get an [`Array`] of numbers representing the [`CostMatrix`] that's
     /// appropriate for memory serialization.
     ///
     /// [Screeps documentation](https://docs.screeps.com/api/#PathFinder.CostMatrix.serialize)
-    #[wasm_bindgen(method)]
+    #[wasm_bindgen(method, final)]
     pub fn serialize(this: &CostMatrix) -> Array;
 
     /// Get a new [`CostMatrix`] using the array representation from
     /// [`CostMatrix::serialize`].
     ///
     /// [Screeps documentation](https://docs.screeps.com/api/#PathFinder.CostMatrix.deserialize)
-    #[wasm_bindgen(static_method_of = CostMatrix, js_namespace = PathFinder)]
+    #[wasm_bindgen(static_method_of = CostMatrix, final, js_namespace = PathFinder)]
     pub fn deserialize(val: Array) -> CostMatrix;
 }
 

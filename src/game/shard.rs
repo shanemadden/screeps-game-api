@@ -9,13 +9,13 @@ extern "C" {
     #[wasm_bindgen(js_name = "shard")]
     type Shard;
 
-    #[wasm_bindgen(js_namespace = ["Game"], js_class = "shard", static_method_of = Shard, getter, js_name = name)]
+    #[wasm_bindgen(js_namespace = ["Game"], js_class = "shard", static_method_of = Shard, structural, getter, js_name = name)]
     fn name() -> JsString;
 
-    #[wasm_bindgen(js_namespace = ["Game"], js_class = "shard", static_method_of = Shard, getter, js_name = type)]
+    #[wasm_bindgen(js_namespace = ["Game"], js_class = "shard", static_method_of = Shard, structural, getter, js_name = type)]
     fn shard_type() -> JsString;
 
-    #[wasm_bindgen(js_namespace = ["Game"], js_class = "shard", static_method_of = Shard, getter, js_name = ptr)]
+    #[wasm_bindgen(js_namespace = ["Game"], js_class = "shard", static_method_of = Shard, structural, getter, js_name = ptr)]
     fn ptr() -> bool;
 }
 
