@@ -1,8 +1,20 @@
 Unreleased
 ==========
 
+- Change `RoomPosition` and `Position` methods `look` and `look_for` to return a `Result` instead
+  of panicking when used in room not visible in the current tick (breaking)
+- Remove re-exports of `constants::find::Find` and `constants::look::Look` enums and mark them as
+  hidden from docs, since they're likely to cause confusion and not generally needed (breaking)
+
+0.12.2 (2023-06-17)
+===================
+
+### Additions:
+
 - Add custom implementation of `Debug` for `RoomName` showing the non-packed name
 - Add implementation of `From<ExitDirection>` for `Exit`
+- Added extra constants for CPU cost per intent, `INTENT_CPU_COST`, and the range of creeps' ranged
+  actions, `CREEP_RANGED_ACTION_RANGE`
 
 0.12.1 (2023-06-10)
 ===================
