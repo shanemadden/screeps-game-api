@@ -6,6 +6,15 @@ Unreleased
 - Remove re-exports of `constants::find::Find` and `constants::look::Look` enums and mark them as
   hidden from docs, since they're likely to cause confusion and not generally needed (breaking)
 - Fix js property mapping for `crate::raw_memory::ForeignSegment::id`
+- Remove `ReturnCode` and replace with `Result<(), ErrorCode>` (breaking)
+- Add feature `unsafe-return-conversion` that allows skipping bounds checks on return codes for all
+  game functions using integer return codes, risking undefined behavior for values outside the
+  expected range
+- Add `Position::checked_from_world_coords` allowing an error return instead of a panic for out of
+  bounds coordinates
+- Add `Position::checked_add` and `Position::checked_add_direction`, alternatives to `Add<_>` which
+  can error
+- Fixed a panic when accessing the store of a creep while spawning
 
 0.12.2 (2023-06-17)
 ===================
