@@ -1,6 +1,10 @@
 Unreleased
 ==========
 
+- Add `RoomName::checked_add` to allow a math to be done on the position of the room on the map
+  without the potential to panic that the `ops::Add` implementation has
+- Add `const` to most functions representing constants, so they can be evaluated during compile
+
 0.14.0 (2023-07-03)
 ===================
 
