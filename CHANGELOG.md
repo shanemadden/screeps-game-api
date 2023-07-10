@@ -4,6 +4,12 @@ Unreleased
 - Add `RoomName::checked_add` to allow a math to be done on the position of the room on the map
   without the potential to panic that the `ops::Add` implementation has
 - Add `const` to most functions representing constants, so they can be evaluated during compile
+- Move `game::gcl::total_for_level` to `constants::math::control_points_for_gcl` and move 
+  `game::gpl::total_for_level` to `constants::math::power_for_gpl` (breaking)
+- Change `constants::math::power_for_gpl` to return `u128` to allow for valid values to be
+  calculated for all possible input `u32` values (breaking)
+- Fix incorrect value of `constants::extras::FLAG_NAME_MAX_LENGTH` - now 100, previously 60
+- Add new extra constant `constants::extras::POWER_CREEP_CARRY_CAPACITY_PER_LEVEL`
 
 0.14.0 (2023-07-03)
 ===================
