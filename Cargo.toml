@@ -1,0 +1,12 @@
+[workspace]
+members = [
+    "screeps-game-api",
+]
+
+resolver = "2"
+
+[workspace.package]
+version = "0.15.0"
+authors = ["David Ross <daboross@daboross.net>"]
+edition = "2021"
+license = "MIT"
