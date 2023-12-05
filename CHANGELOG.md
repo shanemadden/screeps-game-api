@@ -1,6 +1,62 @@
 Unreleased
 ==========
 
+
+
+0.18.0 (2023-11-27)
+===================
+
+### Breaking:
+
+- Simplification of cost matrix types and traits:
+  - Remove `SparseCostMatrix`, to be moved to `screeps-game-utils` crate
+  - Remove `LocalCostMatrix::merge_from_dense` / `merge_from_sparse`
+  - Remove `CostMatrixSet::set_multi` and replace `CostMatrixSet::set` with `set_xy`
+  - Add `CostMatrixGet` trait with `get_xy` function
+  - Remove `HasLocalPosition` trait with no implementations
+
+0.17.0 (2023-11-27)
+===================
+
+### Breaking:
+
+- Change `TOWER_OPTIMAL_RANGE` and `TOWER_FALLOFF_RANGE` types to `u8` and `TOWER_FALLOFF` type
+  to `f64`
+- Changed `RoomTerrain::new` and `game::map::get_room_terrain` return type to
+  `Option<RoomTerrain>`, returning `None` when the specified room is outside the server's
+  map
+- Changed `game::map::get_room_status` return type to `Option<RoomStatusResult>`, returning
+  `None` instead of the previous behavior of returning an artificial 'normal' status for rooms
+  outside the server's map
+- Remove `constants::math::control_points_for_gcl` and `power_for_gpl` - moved to new
+  `screeps-game-utils` crate
+
+### Bugfixes:
+
+- Implement `JsCollectionIntoValue` for `Direction`, making the `JsHashMap` returned by
+  `game::map::describe_exits` able to be used
+- Handle object return properly from `RoomTerrain::get_raw_buffer_to_array` when built in dev mode
+
+0.16.1 (2023-10-11)
+===================
+
+### Additions:
+
+- Add new geometry helper functions to `Direction`: `is_diagonal`, `is_orthogonal`, `multi_rot`,
+  `rot_cw`, and `rot_ccw`
+- Add `checked_add` and `saturating_add` functions to `RoomCoordinate` and `RoomXY`, as well as
+  `checked_add_direction` and `saturating_add_direction` to `RoomXY`
+
+### Bugfixes:
+
+- Fix incorrect setter name on `visualize_path_style` causing the setting to not work
+- `OwnedStructure`, `OwnedStructureObject`, and `OwnedStructureProperties`'s `my` method now
+  correctly handles the value being undefined.
+  - This fixes a panic on checking `my` for unowned controllers. (again)
+
+0.16.0 (2023-09-14)
+===================
+
 ### Breaking:
 
 - Use constant values compatible with the game for serializing `PowerCreepClass`, and
@@ -21,6 +77,9 @@ Unreleased
 - Add `local::serde_position_packed` module, for use with the `with` serde attribute, allowing
   serialized positions to be stored as packed even with human-readable serializers
 - New types `MapFontStyle`, `MapFontVariant`, `MapTextStyle` for use in the changes to map visuals
+- Newly public functions `RoomName::x_coord` and `RoomName::y_coord` to get the position of a room
+  in the world map
+- Add `LocalRoomTerrain`, a wrapper in wasm memory of the data in a `RoomTerrain` object.
 
 ### Bugfixes:
 
