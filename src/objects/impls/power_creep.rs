@@ -1,3 +1,5 @@
+use std::{error::Error, fmt};
+
 use js_sys::{JsString, Object};
 use wasm_bindgen::{prelude::*, JsCast};
 
@@ -329,8 +331,8 @@ impl HasHits for PowerCreep {
     }
 }
 
-impl HasNativeId for PowerCreep {
-    fn native_id(&self) -> JsString {
+impl HasId for PowerCreep {
+    fn js_raw_id(&self) -> JsString {
         self.id_internal()
     }
 }
@@ -341,8 +343,9 @@ impl HasStore for PowerCreep {
     }
 }
 
-// todo
-// impl TryFrom<AccountPowerCreep> for PowerCreep
+impl Attackable for PowerCreep {}
+impl Healable for PowerCreep {}
+impl Transferable for PowerCreep {}
 
 impl SharedCreepProperties for PowerCreep {
     fn memory(&self) -> JsValue {
@@ -467,6 +470,9 @@ extern "C" {
     #[derive(Clone, Debug)]
     pub type AccountPowerCreep;
 
+    #[wasm_bindgen(method, getter = id)]
+    fn id_internal(this: &AccountPowerCreep) -> Option<JsString>;
+
     #[wasm_bindgen(method, getter = className)]
     fn class_internal(this: &AccountPowerCreep) -> PowerCreepClass;
 
@@ -585,6 +591,40 @@ impl AccountPowerCreep {
 impl JsCollectionFromValue for AccountPowerCreep {
     fn from_value(val: JsValue) -> Self {
         val.unchecked_into()
+    }
+}
+
+#[derive(Debug, Clone)]
+pub struct PowerCreepNotSpawned {}
+
+impl fmt::Display for PowerCreepNotSpawned {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "PowerCreep not currently spawned")
+    }
+}
+
+impl Error for PowerCreepNotSpawned {}
+
+impl TryFrom<AccountPowerCreep> for PowerCreep {
+    type Error = PowerCreepNotSpawned;
+
+    fn try_from(account_power_creep: AccountPowerCreep) -> Result<Self, Self::Error> {
+        account_power_creep
+            .id_internal()
+            .map(|_| account_power_creep.unchecked_into())
+            .ok_or(PowerCreepNotSpawned {})
+    }
+}
+
+impl AsRef<AccountPowerCreep> for PowerCreep {
+    fn as_ref(&self) -> &AccountPowerCreep {
+        self.unchecked_ref()
+    }
+}
+
+impl From<PowerCreep> for AccountPowerCreep {
+    fn from(power_creep: PowerCreep) -> Self {
+        power_creep.unchecked_into()
     }
 }
 

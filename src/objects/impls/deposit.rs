@@ -57,8 +57,10 @@ impl HasCooldown for Deposit {
     }
 }
 
-impl HasNativeId for Deposit {
-    fn native_id(&self) -> JsString {
+impl HasId for Deposit {
+    fn js_raw_id(&self) -> JsString {
         self.id_internal()
     }
 }
+
+impl Harvestable for Deposit {}

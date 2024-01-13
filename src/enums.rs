@@ -95,14 +95,14 @@ impl AsRef<RoomObject> for AttackableObject {
 pub enum DecayingObject {
     Deposit,
     Ruin,
-    #[cfg(feature = "score")]
+    #[cfg(feature = "seasonal-season-1")]
     ScoreContainer,
     StructureContainer,
     StructurePortal,
     StructurePowerBank,
     StructureRampart,
     StructureRoad,
-    #[cfg(feature = "symbols")]
+    #[cfg(feature = "seasonal-season-2")]
     SymbolContainer,
     Tombstone,
 }
@@ -118,89 +118,6 @@ pub enum CooldownObject {
     StructureTerminal,
 }
 
-#[enum_dispatch(HasId)]
-pub enum ObjectWithId {
-    Deposit,
-    Mineral,
-    Nuke,
-    Resource,
-    Ruin,
-    #[cfg(feature = "score")]
-    ScoreCollector,
-    #[cfg(feature = "score")]
-    ScoreContainer,
-    Source,
-    StructureContainer,
-    StructureController,
-    StructureExtension,
-    StructureExtractor,
-    StructureFactory,
-    StructureInvaderCore,
-    StructureKeeperLair,
-    StructureLab,
-    StructureLink,
-    StructureNuker,
-    StructureObserver,
-    StructurePortal,
-    StructurePowerBank,
-    StructurePowerSpawn,
-    StructureRampart,
-    StructureRoad,
-    StructureSpawn,
-    StructureStorage,
-    StructureTerminal,
-    StructureTower,
-    StructureWall,
-    #[cfg(feature = "symbols")]
-    SymbolContainer,
-    #[cfg(feature = "symbols")]
-    SymbolDecoder,
-    Tombstone,
-}
-
-#[enum_dispatch(MaybeHasId)]
-pub enum ObjectWithMaybeId {
-    ConstructionSite,
-    Creep,
-    Deposit,
-    Mineral,
-    Nuke,
-    PowerCreep,
-    Resource,
-    Ruin,
-    #[cfg(feature = "score")]
-    ScoreCollector,
-    #[cfg(feature = "score")]
-    ScoreContainer,
-    Source,
-    StructureContainer,
-    StructureController,
-    StructureExtension,
-    StructureExtractor,
-    StructureFactory,
-    StructureInvaderCore,
-    StructureKeeperLair,
-    StructureLab,
-    StructureLink,
-    StructureNuker,
-    StructureObserver,
-    StructurePortal,
-    StructurePowerBank,
-    StructurePowerSpawn,
-    StructureRampart,
-    StructureRoad,
-    StructureSpawn,
-    StructureStorage,
-    StructureTerminal,
-    StructureTower,
-    StructureWall,
-    #[cfg(feature = "symbols")]
-    SymbolContainer,
-    #[cfg(feature = "symbols")]
-    SymbolDecoder,
-    Tombstone,
-}
-
 #[enum_dispatch(HasPosition)]
 pub enum ObjectWithPosition {
     ConstructionSite,
@@ -213,9 +130,9 @@ pub enum ObjectWithPosition {
     Resource,
     RoomPosition,
     Ruin,
-    #[cfg(feature = "score")]
+    #[cfg(feature = "seasonal-season-1")]
     ScoreCollector,
-    #[cfg(feature = "score")]
+    #[cfg(feature = "seasonal-season-1")]
     ScoreContainer,
     Source,
     StructureContainer,
@@ -239,9 +156,9 @@ pub enum ObjectWithPosition {
     StructureTerminal,
     StructureTower,
     StructureWall,
-    #[cfg(feature = "symbols")]
+    #[cfg(feature = "seasonal-season-2")]
     SymbolContainer,
-    #[cfg(feature = "symbols")]
+    #[cfg(feature = "seasonal-season-2")]
     SymbolDecoder,
     Tombstone,
 }
@@ -251,9 +168,9 @@ pub enum StoreObject {
     Creep,
     PowerCreep,
     Ruin,
-    #[cfg(feature = "score")]
+    #[cfg(feature = "seasonal-season-1")]
     ScoreCollector,
-    #[cfg(feature = "score")]
+    #[cfg(feature = "seasonal-season-1")]
     ScoreContainer,
     StructureContainer,
     StructureExtension,
@@ -266,14 +183,14 @@ pub enum StoreObject {
     StructureStorage,
     StructureTerminal,
     StructureTower,
-    #[cfg(feature = "symbols")]
+    #[cfg(feature = "seasonal-season-2")]
     SymbolContainer,
     Tombstone,
 }
 
 /// Enum used for converting a [`Structure`] into a typed object of its specific
 /// structure type.
-#[enum_dispatch(OwnedStructureProperties, HasId)]
+#[enum_dispatch(OwnedStructureProperties)]
 pub enum OwnedStructureObject {
     StructureController,
     StructureExtension,
@@ -307,9 +224,9 @@ pub enum TypedRoomObject {
     PowerCreep,
     Resource,
     Ruin,
-    #[cfg(feature = "score")]
+    #[cfg(feature = "seasonal-season-1")]
     ScoreCollector,
-    #[cfg(feature = "score")]
+    #[cfg(feature = "seasonal-season-1")]
     ScoreContainer,
     Source,
     StructureContainer,
@@ -333,9 +250,9 @@ pub enum TypedRoomObject {
     StructureTerminal,
     StructureTower,
     StructureWall,
-    #[cfg(feature = "symbols")]
+    #[cfg(feature = "seasonal-season-2")]
     SymbolContainer,
-    #[cfg(feature = "symbols")]
+    #[cfg(feature = "seasonal-season-2")]
     SymbolDecoder,
     Tombstone,
 }
@@ -743,6 +660,32 @@ impl StructureObject {
             Self::StructureNuker(s) => Some(s),
             Self::StructureFactory(s) => Some(s),
             Self::StructureInvaderCore(s) => Some(s),
+        }
+    }
+
+    pub fn as_repairable(&self) -> Option<&dyn Repairable> {
+        match self {
+            Self::StructureSpawn(s) => Some(s),
+            Self::StructureExtension(s) => Some(s),
+            Self::StructureRoad(s) => Some(s),
+            Self::StructureWall(s) => Some(s),
+            Self::StructureRampart(s) => Some(s),
+            Self::StructureKeeperLair(_) => None,
+            Self::StructurePortal(_) => None,
+            Self::StructureController(_) => None,
+            Self::StructureLink(s) => Some(s),
+            Self::StructureStorage(s) => Some(s),
+            Self::StructureTower(s) => Some(s),
+            Self::StructureObserver(s) => Some(s),
+            Self::StructurePowerBank(s) => Some(s),
+            Self::StructurePowerSpawn(s) => Some(s),
+            Self::StructureExtractor(s) => Some(s),
+            Self::StructureLab(s) => Some(s),
+            Self::StructureTerminal(s) => Some(s),
+            Self::StructureContainer(s) => Some(s),
+            Self::StructureNuker(s) => Some(s),
+            Self::StructureFactory(s) => Some(s),
+            Self::StructureInvaderCore(_) => None,
         }
     }
 

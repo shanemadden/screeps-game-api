@@ -1,6 +1,42 @@
 Unreleased
 ==========
 
+0.20.1 (2024-01-09)
+===================
+
+### Additions:
+
+- Add `StructureObject::as_repairable` matching related functions for other object traits
+- Add implementations of `TryFrom<AccountPowerCreep>` and `AsRef<AccountPowerCreep>` for
+  `PowerCreep`
+- Add implementation of `From<PowerCreep>` for `AccountPowerCreep`
+- Add `constants::extra::NOTIFY_MAX_LENGTH` with the length of allowed input to `game::notify`
+
+0.20.0 (2024-01-08)
+===================
+
+### Breaking:
+
+- Remove `HasNativeId`, `MaybeHasNativeId`, `HasTypedId`, and `MaybeHasTypedId` traits, adding
+  their functions to the `HasId` and `MaybeHasId` traits
+  - Renamed `native_id`/`try_native_id` to `js_raw_id`/`try_js_raw_id` for consistency with the
+    other trait functions
+- Remove `Resolvable` trait, moving its functionality to `MaybeHasId`
+- Remove `ObjectWithId` and `ObjectWithMaybeId` enums
+- Remove `Option<_>` for style options on `MapVisual`, fixes all visuals failing to render if
+  one without style was used
+- Remove `score`, `symbols`, and `thorium` features, moving all items they enabled to their
+  respective `seasonal-season-1`, `seasonal-season-2`, and `seasonal-season-5` features
+- Add `Repairable` trait, and change target type for `Creep::repair` and `StructureTower::repair`
+  to `?Sized + Repairable` to match ergonomics of similar functions
+
+### Bugfixes:
+
+- Fix `raw_memory::set_public_segments` and `set_default_public_segment` argument conversion
+
+0.19.0 (2023-12-20)
+===================
+
 ### Breaking:
 
 - A number of functions on `StructureController` now return `Option<u32>` to account for cases 
@@ -11,6 +47,7 @@ Unreleased
 
 - An undefined `hits` or `hitsMax` value on an invulnerable wall or certain controllers will no
   longer cause a panic when building in dev mode
+- Fixed incorrect JavaScript field name on `StructurePortal::destination()` getter
 
 0.18.0 (2023-11-27)
 ===================

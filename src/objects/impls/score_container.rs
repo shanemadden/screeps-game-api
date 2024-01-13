@@ -47,8 +47,8 @@ impl CanDecay for ScoreContainer {
     }
 }
 
-impl HasNativeId for ScoreContainer {
-    fn native_id(&self) -> JsString {
+impl HasId for ScoreContainer {
+    fn js_raw_id(&self) -> JsString {
         Self::id_internal(self)
     }
 }
@@ -58,3 +58,5 @@ impl HasStore for ScoreContainer {
         Self::store(self)
     }
 }
+
+impl Withdrawable for ScoreContainer {}

@@ -58,8 +58,8 @@ impl CanDecay for Ruin {
     }
 }
 
-impl HasNativeId for Ruin {
-    fn native_id(&self) -> JsString {
+impl HasId for Ruin {
+    fn js_raw_id(&self) -> JsString {
         Self::id_internal(self)
     }
 }
@@ -69,3 +69,5 @@ impl HasStore for Ruin {
         Self::store(self)
     }
 }
+
+impl Withdrawable for Ruin {}

@@ -37,8 +37,10 @@ extern "C" {
     pub fn score_multiplier(this: &SymbolDecoder) -> u32;
 }
 
-impl HasNativeId for SymbolDecoder {
-    fn native_id(&self) -> JsString {
+impl HasId for SymbolDecoder {
+    fn js_raw_id(&self) -> JsString {
         Self::id_internal(self)
     }
 }
+
+impl Transferable for SymbolDecoder {}

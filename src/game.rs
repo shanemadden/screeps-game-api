@@ -19,6 +19,7 @@ use crate::{
     js_collections::{JsHashMap, JsObjectId},
     local::{ObjectId, RawObjectId, RoomName},
     objects::{AccountPowerCreep, ConstructionSite, Creep, Flag, Room, RoomObject, StructureSpawn},
+    traits::MaybeHasId,
 };
 
 pub mod cpu;
@@ -59,11 +60,11 @@ extern "C" {
     #[wasm_bindgen(static_method_of = Game, getter = time)]
     fn time() -> u32;
 
-    #[cfg(feature = "symbols")]
+    #[cfg(feature = "seasonal-season-2")]
     #[wasm_bindgen(static_method_of = Game, getter = score)]
     fn score() -> u32;
 
-    #[cfg(feature = "symbols")]
+    #[cfg(feature = "seasonal-season-2")]
     #[wasm_bindgen(static_method_of = Game, getter = symbols)]
     fn symbols() -> Object;
 
@@ -151,7 +152,7 @@ pub fn time() -> u32 {
 /// Your current score, as determined by the symbols you have decoded.
 ///
 /// [Screeps documentation](https://docs-season.screeps.com/api/#Game.score)
-#[cfg(feature = "symbols")]
+#[cfg(feature = "seasonal-season-2")]
 pub fn score() -> u32 {
     Game::score()
 }
@@ -160,7 +161,7 @@ pub fn score() -> u32 {
 /// determine your score.
 ///
 /// [Screeps documentation](https://docs-season.screeps.com/api/#Game.symbols)
-#[cfg(feature = "symbols")]
+#[cfg(feature = "seasonal-season-2")]
 pub fn symbols() -> JsHashMap<crate::ResourceType, u32> {
     Game::symbols().into()
 }
@@ -171,11 +172,9 @@ pub fn symbols() -> JsHashMap<crate::ResourceType, u32> {
 /// [Screeps documentation](http://docs.screeps.com/api/#Game.getObjectById)
 pub fn get_object_by_js_id_typed<T>(id: &JsObjectId<T>) -> Option<T>
 where
-    T: From<JsValue>,
+    T: MaybeHasId + JsCast,
 {
-    Game::get_object_by_id(&id.raw)
-        .map(JsValue::from)
-        .map(Into::into)
+    Game::get_object_by_id(&id.raw).map(JsCast::unchecked_into)
 }
 
 /// Get the typed object represented by a given [`ObjectId`], if it's still
@@ -184,14 +183,12 @@ where
 /// [Screeps documentation](http://docs.screeps.com/api/#Game.getObjectById)
 pub fn get_object_by_id_typed<T>(id: &ObjectId<T>) -> Option<T>
 where
-    T: From<JsValue>,
+    T: MaybeHasId + JsCast,
 {
     // construct a reference to a javascript string using the id data
     let js_str = JsString::from(id.to_string());
 
-    Game::get_object_by_id(&js_str)
-        .map(JsValue::from)
-        .map(Into::into)
+    Game::get_object_by_id(&js_str).map(JsCast::unchecked_into)
 }
 
 /// Get the [`RoomObject`] represented by a given [`RawObjectId`], if it's
@@ -208,9 +205,12 @@ pub fn get_object_by_id_erased(id: &RawObjectId) -> Option<RoomObject> {
 /// Send an email message to yourself with a given message.
 ///
 /// Set a `group_interval` with a limit, in minutes, on how frequently emails
-/// are allowed to be sent.
+/// are allowed to be sent. Message will be truncated to [`NOTIFY_MAX_LENGTH`]
+/// characters.
 ///
 /// [Screeps documentation](https://docs.screeps.com/api/#Game.notify)
+///
+/// [`NOTIFY_MAX_LENGTH`]: crate::constants::NOTIFY_MAX_LENGTH
 pub fn notify(message: &str, group_interval: Option<u32>) {
     let message: JsString = message.into();
 
