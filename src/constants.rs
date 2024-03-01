@@ -102,7 +102,7 @@ pub mod creep {
 /// Re-export of all constants related to structures.
 pub mod structure {
     pub use super::{
-        extra::{CONSTRUCTION_SITE_STOMP_RATIO, LAB_REACTION_RANGE, TERMINAL_SEND_COST_SCALE},
+        extra::{CONSTRUCTION_SITE_DROP_RATIO, LAB_REACTION_RANGE, TERMINAL_SEND_COST_SCALE},
         numbers::{
             extension_energy_capacity, invader_core_creep_spawn_time, invader_core_expand_time,
             rampart_hits_max, ruin_decay_structures, stronghold_rampart_hits,
@@ -256,7 +256,10 @@ pub mod observer {
 ///
 /// [`Resource`]: crate::objects::Resource
 pub mod resource {
-    pub use super::{numbers::ENERGY_DECAY, types::ResourceType};
+    pub use super::{
+        numbers::ENERGY_DECAY,
+        types::{ResourceType, RESOURCES_ALL},
+    };
 }
 
 /// Re-export of all constants related to [`Tombstone`]s.

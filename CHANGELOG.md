@@ -5,6 +5,8 @@ Unreleased
 
 - Change return type of `Flag::name` and `StructureSpawn::name` to `String` from `JsString`
 - Change name of `LocalRoomTerrain::get` to `get_xy` for consistency with `RoomTerrain`
+- Change name of `constants::extra::CONSTRUCTION_SITE_STOMP_RATIO` to
+  `CONSTRUCTION_SITE_DROP_RATIO`
 
 ### Additions:
 
@@ -17,7 +19,19 @@ Unreleased
 - Add `RoomCoordinate::is_room_edge`, `RoomXY::is_room_edge`, and `Position::is_room_edge`
 - Add new extra constant `constants::extra::CONTROLLER_DOWNGRADE_PROGRESS_RATIO`, which is
   the percentage toward the previous level that a downgrading controller's progress is set to
-- Add new extra constants `constants::extra::MOVE_COST_PLAIN`, `MOVE_COST_ROAD`, `MOVE_COST_SWAMP`
+- Add new extra constants `constants::extra::{MOVE_COST_PLAIN, MOVE_COST_ROAD, MOVE_COST_SWAMP}`
+- Add constant `screeps::constants::resources::RESOURCES_ALL` (also accessible as 
+  `screeps::RESOURCES_ALL`) that contains every resource type
+- Add function `StoreObject::resource_types` to get the types of resources that a store can hold
+    - This can be used with a `StructureObject` as `StoreObject::try_from(structure_object).map(|store| store.resource_types())`
+      which returns a `Result<&'static [ResourceType], StoreObjectConversionError>`
+- Add missing `StoreObject::Reactor` to the `seasonal-season-5` feature.
+
+### Misc:
+
+- Change `PhantomData` in `screeps::local::ObjectId` to better model `ObjectId`'s relationship with the wrapped type.
+    - This allows `ObjectId` to be `Send + Sync` regardless of the wrapped type
+- Update `enum-iterator` to 2.0
 
 0.20.1 (2024-01-09)
 ===================
