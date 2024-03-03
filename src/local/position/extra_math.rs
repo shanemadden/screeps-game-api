@@ -54,6 +54,8 @@ impl Position {
     /// assert_eq!(pos_top_left.get_manhattan_range_to(pos_diagonal_room), 100);
     /// // 255 rooms distance from top room to bottom room
     /// assert_eq!(pos_top_left.get_manhattan_range_to(pos_bot_left_zero), 255 * 50);
+    /// // and that should hold for the room one away diagonally from the top left, too
+    /// assert_eq!(pos_diagonal_room.get_manhattan_range_to(pos_bot_left_zero), 255 * 50);
     /// // 255 rooms distance from top to bottom, 255 more from left to right, and 49 * 2 to the room corner
     /// assert_eq!(pos_top_left.get_manhattan_range_to(pos_bot_right_max), 255 * 50 * 2 + 49 * 2);
     /// ```
