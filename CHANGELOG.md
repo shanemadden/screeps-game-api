@@ -27,6 +27,7 @@ Unreleased
       which returns a `Result<&'static [ResourceType], StoreObjectConversionError>`
 - Add missing `StoreObject::Reactor` to the `seasonal-season-5` feature
 - Implement `Serialize` and `Deserialize` for `RoomStatus`
+- Add `Position::get_manhattan_range_to`
 
 ### Bugfixes:
 

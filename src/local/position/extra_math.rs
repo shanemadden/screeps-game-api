@@ -12,6 +12,34 @@ impl Position {
         self.xy().is_room_edge()
     }
 
+    /// Gets Manhattan range to the specified position.
+    ///
+    /// While most calculations in Screeps: World use Chebyshev distance (see
+    /// [`Position::get_range_to`]), the Manhattan distance between two
+    /// positions can be useful for certain calculations.
+    ///
+    /// For more information see [Wikipedia](https://en.wikipedia.org/wiki/Taxicab_geometry).
+    ///
+    /// Like other [`Position`] math functions, this operates on positions as
+    /// "world positions", and will return an accurate range for positions in
+    /// different rooms.
+    ///
+    /// # Examples
+    /// ```rust
+    /// # use screeps::Position;
+    /// // (5, 10) in E0N0
+    /// let pos_1 = Position::from_world_coords(5, 10);
+    /// // (8, 15) in E0N0
+    /// let pos_2 = Position::from_world_coords(8, 15);
+    /// // The differences are 3 along the X axis and 5 along the Y axis
+    /// // so the manhattan distance is 8.
+    /// assert_eq!(pos_1.get_manhattan_range_to(pos_2), 8);
+    /// ```
+    pub fn get_manhattan_range_to(self, target: Position) -> u32 {
+        let (dx, dy) = self - target;
+        dx.abs() as u32 + dy.abs() as u32
+    }
+
     /// Returns a new position offset from this position by the specified x
     /// coords and y coords.
     ///
