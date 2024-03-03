@@ -26,6 +26,7 @@ impl Position {
     ///
     /// # Examples
     /// ```rust
+    /// # use screeps::{Position, RoomCoordinate};
     /// let w127n127 = "W127N127".parse().unwrap();
     /// let w126n126 = "W126N126".parse().unwrap();
     /// let w127s127 = "W127S127".parse().unwrap();
@@ -79,7 +80,6 @@ impl Position {
     /// # Example
     ///
     /// ```
-    /// # use std::convert::TryFrom;
     /// # use screeps::{Position, RoomCoordinate};
     /// let e21s21 = "E21S21".parse().unwrap();
     /// let e21s22 = "E21S22".parse().unwrap();
