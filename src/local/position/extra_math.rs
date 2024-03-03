@@ -26,40 +26,14 @@ impl Position {
     ///
     /// # Examples
     /// ```rust
-    /// # use screeps::{Position, RoomCoordinate};
-    /// let w127n127 = "W127N127".parse().unwrap();
-    /// let w126n126 = "W126N126".parse().unwrap();
-    /// let w127s127 = "W127S127".parse().unwrap();
-    /// let e127s127 = "E127S127".parse().unwrap();
-    ///
-    /// let pos_top_left = Position::new(
-    ///    RoomCoordinate::new(0).unwrap(),
-    ///    RoomCoordinate::new(0).unwrap(),
-    ///    w127n127,
-    /// );
-    /// let pos_diagonal_room = Position::new(
-    ///    RoomCoordinate::new(0).unwrap(),
-    ///    RoomCoordinate::new(0).unwrap(),
-    ///    w126n126,
-    /// );
-    /// let pos_bot_left_zero = Position::new(
-    ///    RoomCoordinate::new(0).unwrap(),
-    ///    RoomCoordinate::new(0).unwrap(),
-    ///    w127s127,
-    /// );
-    /// let pos_bot_right_max = Position::new(
-    ///    RoomCoordinate::new(49).unwrap(),
-    ///    RoomCoordinate::new(49).unwrap(),
-    ///    e127s127,
-    /// );
-    ///
-    /// assert_eq!(pos_top_left.get_manhattan_range_to(pos_diagonal_room), 100);
-    /// // 255 rooms distance from top room to bottom room
-    /// assert_eq!(pos_top_left.get_manhattan_range_to(pos_bot_left_zero), 255 * 50);
-    /// // and that should be the range for the room one away diagonally from the top left, too
-    /// assert_eq!(pos_diagonal_room.get_manhattan_range_to(pos_bot_left_zero), 255 * 50);
-    /// // 255 rooms distance from top to bottom, 255 more from left to right, and 49 * 2 to the room corner
-    /// assert_eq!(pos_top_left.get_manhattan_range_to(pos_bot_right_max), 255 * 50 * 2 + 49 * 2);
+    /// # use screeps::Position;
+    /// // (5, 10) in E0N0
+    /// let pos_1 = Position::from_world_coords(5, 10);
+    /// // (8, 15) in E0N0
+    /// let pos_2 = Position::from_world_coords(8, 15);
+    /// // The differences are 3 along the X axis and 5 along the Y axis
+    /// // so the manhattan distance is 8.
+    /// assert_eq!(pos_1.get_manhattan_range_to(pos_2), 8);
     /// ```
     pub fn get_manhattan_range_to(self, target: Position) -> u32 {
         let (dx, dy) = self - target;
@@ -280,5 +254,56 @@ impl Sub<Position> for Position {
         let (mx, my) = self.world_coords();
         let (ox, oy) = other.world_coords();
         (mx - ox, my - oy)
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use crate::local::{Position, RoomCoordinate};
+
+    #[test]
+    fn test_manhattan_range() {
+        let w127n127 = "W127N127".parse().unwrap();
+        let w126n126 = "W126N126".parse().unwrap();
+        let w127s127 = "W127S127".parse().unwrap();
+        let e127s127 = "E127S127".parse().unwrap();
+        let pos_top_left = Position::new(
+            RoomCoordinate::new(0).unwrap(),
+            RoomCoordinate::new(0).unwrap(),
+            w127n127,
+        );
+        let pos_diagonal_room = Position::new(
+            RoomCoordinate::new(0).unwrap(),
+            RoomCoordinate::new(0).unwrap(),
+            w126n126,
+        );
+        let pos_bot_left_zero = Position::new(
+            RoomCoordinate::new(0).unwrap(),
+            RoomCoordinate::new(0).unwrap(),
+            w127s127,
+        );
+        let pos_bot_right_max = Position::new(
+            RoomCoordinate::new(49).unwrap(),
+            RoomCoordinate::new(49).unwrap(),
+            e127s127,
+        );
+        assert_eq!(pos_top_left.get_manhattan_range_to(pos_diagonal_room), 100);
+        // 255 rooms distance from top room to bottom room
+        assert_eq!(
+            pos_top_left.get_manhattan_range_to(pos_bot_left_zero),
+            255 * 50
+        );
+        // and that should be the range for the room one away diagonally from the top
+        // left, too
+        assert_eq!(
+            pos_diagonal_room.get_manhattan_range_to(pos_bot_left_zero),
+            255 * 50
+        );
+        // 255 rooms distance from top to bottom, 255 more from left to right, and 49 *
+        // 2 to the room corner
+        assert_eq!(
+            pos_top_left.get_manhattan_range_to(pos_bot_right_max),
+            255 * 50 * 2 + 49 * 2
+        );
     }
 }
