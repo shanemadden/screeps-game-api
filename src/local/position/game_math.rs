@@ -66,7 +66,7 @@ impl Position {
     #[inline]
     pub fn get_range_to(self, target: Position) -> u32 {
         let (dx, dy) = self - target;
-        dx.abs().max(dy.abs()) as u32
+        dx.unsigned_abs().max(dy.unsigned_abs())
     }
 
     /// Checks whether this position is in the given range of another position.

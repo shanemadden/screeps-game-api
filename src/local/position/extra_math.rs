@@ -59,7 +59,7 @@ impl Position {
     /// ```
     pub fn get_manhattan_range_to(self, target: Position) -> u32 {
         let (dx, dy) = self - target;
-        dx.abs() as u32 + dy.abs() as u32
+        dx.unsigned_abs() + dy.unsigned_abs()
     }
 
     /// Returns a new position offset from this position by the specified x
