@@ -31,7 +31,7 @@ impl Position {
     /// let w126n126 = "W126N126".parse().unwrap();
     /// let w127s127 = "W127S127".parse().unwrap();
     /// let e127s127 = "E127S127".parse().unwrap();
-    /// 
+    ///
     /// let pos_top_left = Position::new(
     ///    RoomCoordinate::new(0).unwrap(),
     ///    RoomCoordinate::new(0).unwrap(),
@@ -52,7 +52,7 @@ impl Position {
     ///    RoomCoordinate::new(49).unwrap(),
     ///    e127s127,
     /// );
-    /// 
+    ///
     /// assert_eq!(pos_top_left.get_manhattan_range_to(pos_diagonal_room), 100);
     /// // 255 rooms distance from top room to bottom room
     /// assert_eq!(pos_top_left.get_manhattan_range_to(pos_bot_left_zero), 255 * 50);
