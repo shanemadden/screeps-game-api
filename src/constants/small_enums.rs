@@ -453,6 +453,33 @@ impl Part {
     }
 }
 
+// keep integer representations in sync with js/part.js
+#[cfg(feature = "snippets")]
+#[wasm_bindgen]
+#[derive(
+    Debug,
+    PartialEq,
+    Eq,
+    Clone,
+    Copy,
+    Hash,
+    FromPrimitive,
+    Serialize_repr,
+    Deserialize_repr,
+    Sequence,
+)]
+#[repr(u8)]
+pub enum PartInt {
+    Move = 0,
+    Work = 1,
+    Carry = 2,
+    Attack = 3,
+    RangedAttack = 4,
+    Tough = 5,
+    Heal = 6,
+    Claim = 7,
+}
+
 /// Translates the `DENSITY_*` constants.
 #[wasm_bindgen]
 #[derive(

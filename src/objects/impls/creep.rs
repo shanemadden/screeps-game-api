@@ -684,3 +684,10 @@ extern "C" {
     #[wasm_bindgen(method, getter)]
     pub fn hits(this: &BodyPart) -> u32;
 }
+
+impl BodyPart {
+    #[cfg(feature = "snippets")]
+    pub fn part_int(&self) -> crate::constants::PartInt {
+        crate::constants::convert::part_num_for_bodypart(self)
+    }
+}

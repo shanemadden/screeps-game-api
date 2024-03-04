@@ -72,6 +72,9 @@ pub mod seasonal;
 mod small_enums;
 mod types;
 
+#[cfg(feature = "snippets")]
+pub mod convert;
+
 pub use self::{
     extra::*, find::FindConstant, look::LookConstant, numbers::*, recipes::FactoryRecipe,
     small_enums::*, types::*,
