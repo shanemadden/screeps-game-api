@@ -1,18 +1,14 @@
 //! Various constants translated as small enums.
-use std::{borrow::Cow, fmt};
+use std::fmt;
 
 use enum_iterator::Sequence;
 use js_sys::JsString;
 use num_derive::FromPrimitive;
 use num_traits::FromPrimitive;
-use serde::{
-    de::{Error as _, Unexpected},
-    Deserialize, Serialize,
-};
+use serde::{Deserialize, Serialize};
 use serde_repr::{Deserialize_repr, Serialize_repr};
 use wasm_bindgen::prelude::*;
 
-use super::{macros::named_enum_serialize_deserialize, InvalidConstantString};
 use crate::{
     constants::find::{Exit, Find},
     prelude::*,
@@ -418,24 +414,6 @@ impl Terrain {
 }
 
 /// Translates body part type and `BODYPARTS_ALL` constants
-#[cfg(not(feature = "snippets"))]
-#[wasm_bindgen]
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Sequence)]
-pub enum Part {
-    Move = "move",
-    Work = "work",
-    Carry = "carry",
-    Attack = "attack",
-    RangedAttack = "ranged_attack",
-    Tough = "tough",
-    Heal = "heal",
-    Claim = "claim",
-}
-
-named_enum_serialize_deserialize!(Part);
-
-// keep integer representations in sync with js/part.js
-#[cfg(feature = "snippets")]
 #[wasm_bindgen]
 #[derive(
     Debug,
@@ -450,6 +428,7 @@ named_enum_serialize_deserialize!(Part);
     Sequence,
 )]
 #[repr(u8)]
+// keep integer representations in sync with js/part.js
 pub enum Part {
     Move = 0,
     Work = 1,
@@ -474,9 +453,6 @@ impl Part {
             Part::Tough => 10,
             Part::Heal => 250,
             Part::Claim => 600,
-            // I guess bindgen is adding a `#[non_exhaustive]` onto the enum and forcing us to do
-            // this:
-            _ => 0,
         }
     }
 }

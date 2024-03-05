@@ -63,6 +63,7 @@ pub(crate) mod macros {
     pub(crate) use named_enum_serialize_deserialize;
 }
 
+pub mod convert;
 pub mod extra;
 pub mod find;
 pub mod look;
@@ -71,9 +72,6 @@ mod recipes;
 pub mod seasonal;
 mod small_enums;
 mod types;
-
-#[cfg(feature = "snippets")]
-pub mod convert;
 
 pub use self::{
     extra::*, find::FindConstant, look::LookConstant, numbers::*, recipes::FactoryRecipe,
