@@ -418,6 +418,7 @@ impl Terrain {
 }
 
 /// Translates body part type and `BODYPARTS_ALL` constants
+#[cfg(not(feature = "snippets"))]
 #[wasm_bindgen]
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Sequence)]
 pub enum Part {
@@ -432,6 +433,33 @@ pub enum Part {
 }
 
 named_enum_serialize_deserialize!(Part);
+
+// keep integer representations in sync with js/part.js
+#[cfg(feature = "snippets")]
+#[wasm_bindgen]
+#[derive(
+    Debug,
+    PartialEq,
+    Eq,
+    Clone,
+    Copy,
+    Hash,
+    FromPrimitive,
+    Serialize_repr,
+    Deserialize_repr,
+    Sequence,
+)]
+#[repr(u8)]
+pub enum Part {
+    Move = 0,
+    Work = 1,
+    Carry = 2,
+    Attack = 3,
+    RangedAttack = 4,
+    Tough = 5,
+    Heal = 6,
+    Claim = 7,
+}
 
 impl Part {
     /// Translates the `BODYPART_COST` constant.
@@ -451,33 +479,6 @@ impl Part {
             _ => 0,
         }
     }
-}
-
-// keep integer representations in sync with js/part.js
-#[cfg(feature = "snippets")]
-#[wasm_bindgen]
-#[derive(
-    Debug,
-    PartialEq,
-    Eq,
-    Clone,
-    Copy,
-    Hash,
-    FromPrimitive,
-    Serialize_repr,
-    Deserialize_repr,
-    Sequence,
-)]
-#[repr(u8)]
-pub enum PartInt {
-    Move = 0,
-    Work = 1,
-    Carry = 2,
-    Attack = 3,
-    RangedAttack = 4,
-    Tough = 5,
-    Heal = 6,
-    Claim = 7,
 }
 
 /// Translates the `DENSITY_*` constants.
