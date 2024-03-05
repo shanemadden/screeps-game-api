@@ -79,9 +79,10 @@ impl StructureSpawn {
     ///
     /// [Screeps documentation](https://docs.screeps.com/api/#StructureSpawn.spawnCreep)
     pub fn spawn_creep(&self, body: &[Part], name: &str) -> Result<(), ErrorCode> {
-        let body = body.iter().cloned().map(JsValue::from).collect();
+        let body_vec: Vec<u8> = body.iter().map(|v| *v as u8).collect();
+        let body_array = crate::constants::convert::part_array_num_to_str(&body_vec);
 
-        ErrorCode::result_from_i8(Self::spawn_creep_internal(self, &body, name, None))
+        ErrorCode::result_from_i8(Self::spawn_creep_internal(self, &body_array, name, None))
     }
 
     /// Create a new creep with the specified body part [`Array`], name
