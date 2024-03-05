@@ -21,6 +21,14 @@ const PART_NUM_TO_STR = {
     '7': CLAIM,
 };
 
+function part_num_to_str(num) {
+    return PART_NUM_TO_STR[num]
+}
+
 export function part_num_for_bodypart(bodypart) {
     return PART_STR_TO_NUM[bodypart.type]
+}
+
+export function part_array_num_to_str(body_num_array) {
+    return body_num_array.map(part_num_to_str)
 }

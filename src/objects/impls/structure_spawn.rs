@@ -99,7 +99,8 @@ impl StructureSpawn {
         name: &str,
         opts: &SpawnOptions,
     ) -> Result<(), ErrorCode> {
-        let body = body.iter().cloned().map(JsValue::from).collect();
+        let body_vec: Vec<u8> = body.iter().map(|v| *v as u8).collect();
+        let body_array = crate::constants::convert::part_array_num_to_str(&body_vec);
 
         let js_opts = ObjectExt::unchecked_from_js(JsValue::from(Object::new()));
 
@@ -121,7 +122,7 @@ impl StructureSpawn {
 
         ErrorCode::result_from_i8(Self::spawn_creep_internal(
             self,
-            &body,
+            &body_array,
             name,
             Some(&js_opts),
         ))
