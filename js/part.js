@@ -30,14 +30,7 @@ export function part_num_for_bodypart(bodypart) {
 }
 
 export function part_array_num_to_str(body_num_array) {
-    console.log(typeof body_num_array)
-    console.log(typeof [1, 2]);
-    let r = body_num_array.map(part_num_to_str);
-    console.log([1, 2].map(part_num_to_str));
-    console.log("passed part array ints", body_num_array);
-    console.log("passed part array mapped", body_num_array.map(part_num_to_str));
-    console.log("hardcoded array ints", [0, 0]);
-    console.log("hardcoded array mapped", [0, 0].map(part_num_to_str));
-    //console.log([0, 0] == body_num_array);
-    return r
+    // this is a Uint8Array and its map can't produce strings as-is,
+    // spread it first so the map can result in an array with constant strings
+    return [...body_num_array].map(part_num_to_str)
 }
