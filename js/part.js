@@ -30,8 +30,10 @@ export function part_num_for_bodypart(bodypart) {
 }
 
 export function part_array_num_to_str(body_num_array) {
-    console.log(JSON.stringify(body_num_array))
+    console.log(typeof body_num_array)
+    console.log(typeof [1, 2]);
     let r = body_num_array.map(part_num_to_str);
+    console.log([1, 2].map(part_num_to_str));
     console.log(JSON.stringify(r));
     return r
 }
