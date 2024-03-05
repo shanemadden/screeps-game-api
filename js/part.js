@@ -34,6 +34,10 @@ export function part_array_num_to_str(body_num_array) {
     console.log(typeof [1, 2]);
     let r = body_num_array.map(part_num_to_str);
     console.log([1, 2].map(part_num_to_str));
-    console.log(JSON.stringify(r));
+    console.log("passed part array ints", body_num_array);
+    console.log("passed part array mapped", body_num_array.map(part_num_to_str));
+    console.log("hardcoded array ints", [0, 0]);
+    console.log("hardcoded array mapped", [0, 0].map(part_num_to_str));
+    //console.log([0, 0] == body_num_array);
     return r
 }
