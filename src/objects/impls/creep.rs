@@ -678,9 +678,12 @@ extern "C" {
     #[wasm_bindgen(method, getter)]
     pub fn boost(this: &BodyPart) -> Option<ResourceType>;
 
-    #[wasm_bindgen(method, getter = type)]
-    pub fn part(this: &BodyPart) -> Part;
-
     #[wasm_bindgen(method, getter)]
     pub fn hits(this: &BodyPart) -> u32;
+}
+
+impl BodyPart {
+    pub fn part(&self) -> Part {
+        crate::constants::convert::part_num_for_bodypart(self)
+    }
 }
