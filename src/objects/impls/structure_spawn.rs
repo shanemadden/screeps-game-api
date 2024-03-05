@@ -78,7 +78,7 @@ impl StructureSpawn {
     /// about how to replace Memory and/or delete RawMemory._parsed
     ///
     /// [Screeps documentation](https://docs.screeps.com/api/#StructureSpawn.spawnCreep)
-    pub fn spawn_creep(&self, body: &[Part], name: &str) -> Result<(), ErrorCode> {
+    pub fn spawn_creep(&self, body: &Vec<Part>, name: &str) -> Result<(), ErrorCode> {
         let body_vec: Vec<u8> = body.iter().map(|v| *v as u8).collect();
         let body_array = crate::constants::convert::part_array_num_to_str(&body_vec);
 
@@ -96,7 +96,7 @@ impl StructureSpawn {
     /// [Screeps documentation](https://docs.screeps.com/api/#StructureSpawn.spawnCreep)
     pub fn spawn_creep_with_options(
         &self,
-        body: &[Part],
+        body: &Vec<Part>,
         name: &str,
         opts: &SpawnOptions,
     ) -> Result<(), ErrorCode> {
