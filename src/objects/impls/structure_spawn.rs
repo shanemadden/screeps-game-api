@@ -56,7 +56,7 @@ extern "C" {
     #[wasm_bindgen(method, js_name = spawnCreep)]
     fn spawn_creep_internal(
         this: &StructureSpawn,
-        body: &Array,
+        body: Array,
         name: &str,
         options: Option<&Object>,
     ) -> i8;
@@ -78,11 +78,12 @@ impl StructureSpawn {
     /// about how to replace Memory and/or delete RawMemory._parsed
     ///
     /// [Screeps documentation](https://docs.screeps.com/api/#StructureSpawn.spawnCreep)
-    pub fn spawn_creep(&self, body: Vec<Part>, name: &str) -> Result<(), ErrorCode> {
-        let body_vec: Vec<u8> = body.iter().map(|v| *v as u8).collect();
-        let body_array = crate::constants::convert::part_array_num_to_str(body_vec);
+    pub fn spawn_creep(&self, body: &[Part], name: &str) -> Result<(), ErrorCode> {
+        let body_array = crate::constants::convert::part_array_num_to_str(unsafe {
+            std::mem::transmute(body)
+        });
 
-        ErrorCode::result_from_i8(Self::spawn_creep_internal(self, &body_array, name, None))
+        ErrorCode::result_from_i8(Self::spawn_creep_internal(self, body_array, name, None))
     }
 
     /// Create a new creep with the specified body part [`Array`], name
@@ -96,12 +97,13 @@ impl StructureSpawn {
     /// [Screeps documentation](https://docs.screeps.com/api/#StructureSpawn.spawnCreep)
     pub fn spawn_creep_with_options(
         &self,
-        body: Vec<Part>,
+        body: &[Part],
         name: &str,
         opts: &SpawnOptions,
     ) -> Result<(), ErrorCode> {
-        let body_vec: Vec<u8> = body.iter().map(|v| *v as u8).collect();
-        let body_array = crate::constants::convert::part_array_num_to_str(body_vec);
+        let body_array = crate::constants::convert::part_array_num_to_str(unsafe {
+            std::mem::transmute(body)
+        });
 
         let js_opts = ObjectExt::unchecked_from_js(JsValue::from(Object::new()));
 
@@ -123,7 +125,7 @@ impl StructureSpawn {
 
         ErrorCode::result_from_i8(Self::spawn_creep_internal(
             self,
-            &body_array,
+            body_array,
             name,
             Some(&js_opts),
         ))

@@ -63,7 +63,7 @@ pub(crate) mod macros {
     pub(crate) use named_enum_serialize_deserialize;
 }
 
-pub mod convert;
+pub(crate) mod convert;
 pub mod extra;
 pub mod find;
 pub mod look;
