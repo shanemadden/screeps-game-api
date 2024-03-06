@@ -79,6 +79,8 @@ impl StructureSpawn {
     ///
     /// [Screeps documentation](https://docs.screeps.com/api/#StructureSpawn.spawnCreep)
     pub fn spawn_creep(&self, body: &[Part], name: &str) -> Result<(), ErrorCode> {
+        // SAFETY: &[Part] contains u8 values because it's repr(u8), safe to transmute
+        // to &[u8]
         let body_array =
             crate::constants::convert::part_array_num_to_str(unsafe { std::mem::transmute(body) });
 
@@ -100,6 +102,8 @@ impl StructureSpawn {
         name: &str,
         opts: &SpawnOptions,
     ) -> Result<(), ErrorCode> {
+        // SAFETY: &[Part] contains u8 values because it's repr(u8), safe to transmute
+        // to &[u8]
         let body_array =
             crate::constants::convert::part_array_num_to_str(unsafe { std::mem::transmute(body) });
 
