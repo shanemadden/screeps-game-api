@@ -79,9 +79,8 @@ impl StructureSpawn {
     ///
     /// [Screeps documentation](https://docs.screeps.com/api/#StructureSpawn.spawnCreep)
     pub fn spawn_creep(&self, body: &[Part], name: &str) -> Result<(), ErrorCode> {
-        let body_array = crate::constants::convert::part_array_num_to_str(unsafe {
-            std::mem::transmute(body)
-        });
+        let body_array =
+            crate::constants::convert::part_array_num_to_str(unsafe { std::mem::transmute(body) });
 
         ErrorCode::result_from_i8(Self::spawn_creep_internal(self, body_array, name, None))
     }
@@ -101,9 +100,8 @@ impl StructureSpawn {
         name: &str,
         opts: &SpawnOptions,
     ) -> Result<(), ErrorCode> {
-        let body_array = crate::constants::convert::part_array_num_to_str(unsafe {
-            std::mem::transmute(body)
-        });
+        let body_array =
+            crate::constants::convert::part_array_num_to_str(unsafe { std::mem::transmute(body) });
 
         let js_opts = ObjectExt::unchecked_from_js(JsValue::from(Object::new()));
 
