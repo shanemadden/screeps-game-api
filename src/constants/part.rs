@@ -32,6 +32,35 @@ pub enum Part {
     Claim = 7,
 }
 
+impl Part {
+    /// Translates the `BODYPART_COST` constant.
+    #[inline]
+    pub const fn cost(self) -> u32 {
+        match self {
+            Part::Move => 50,
+            Part::Work => 100,
+            Part::Carry => 50,
+            Part::Attack => 80,
+            Part::RangedAttack => 150,
+            Part::Tough => 10,
+            Part::Heal => 250,
+            Part::Claim => 600,
+        }
+    }
+
+    pub(crate) fn slice_to_js_array(parts: &[Self]) -> Array {
+        PART_NUM_TO_STR_MAP.with(|map| {
+            // SAFETY: &[Part] contains u8 values because it's repr(u8), safe to transmute
+            // to &[u8]
+            part_nums_to_str_array(map, unsafe { std::mem::transmute(parts) })
+        })
+    }
+
+    pub(crate) fn from_bodypart(body_part: &BodyPart) -> Self {
+        PART_STR_TO_NUM_MAP.with(|map| bodypart_to_part_num(map, body_part))
+    }
+}
+
 #[wasm_bindgen]
 extern "C" {
     #[wasm_bindgen(js_name = MOVE)]
@@ -102,35 +131,6 @@ fn part_nums_to_str_array(map: &Map, part_array: &[u8]) -> Array {
     array
 }
 
-impl Part {
-    /// Translates the `BODYPART_COST` constant.
-    #[inline]
-    pub const fn cost(self) -> u32 {
-        match self {
-            Part::Move => 50,
-            Part::Work => 100,
-            Part::Carry => 50,
-            Part::Attack => 80,
-            Part::RangedAttack => 150,
-            Part::Tough => 10,
-            Part::Heal => 250,
-            Part::Claim => 600,
-        }
-    }
-
-    pub(crate) fn slice_to_js_array(parts: &[Self]) -> Array {
-        PART_NUM_TO_STR_MAP.with(|map| {
-            // SAFETY: &[Part] contains u8 values because it's repr(u8), safe to transmute
-            // to &[u8]
-            part_nums_to_str_array(map, unsafe { std::mem::transmute(parts) })
-        })
-    }
-
-    pub(crate) fn from_bodypart(body_part: &BodyPart) -> Self {
-        PART_STR_TO_NUM_MAP.with(|map| bodypart_to_part_num(map, body_part))
-    }
-}
-
 #[cfg(test)]
 mod test {
     use wasm_bindgen::prelude::*;
@@ -138,6 +138,8 @@ mod test {
 
     use super::{part_nums_to_str_array, Part};
 
+    // Constant values aren't present in test node environment, use explicit string
+    // values in tests instead
     thread_local! {
         static TEST_PART_NUM_TO_STR_MAP: js_sys::Map = {
             js_sys::Map::new()
