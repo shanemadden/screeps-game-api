@@ -63,10 +63,10 @@ pub(crate) mod macros {
     pub(crate) use named_enum_serialize_deserialize;
 }
 
-pub(crate) mod convert;
 pub mod extra;
 pub mod find;
 pub mod look;
+mod part;
 mod numbers;
 mod recipes;
 pub mod seasonal;
@@ -75,7 +75,7 @@ mod types;
 
 pub use self::{
     extra::*, find::FindConstant, look::LookConstant, numbers::*, recipes::FactoryRecipe,
-    small_enums::*, types::*,
+    small_enums::*, types::*, part::*,
 };
 
 /// Re-export of all constants related to [`Creep`] behavior and operations.
@@ -96,7 +96,7 @@ pub mod creep {
             MAX_CREEP_SIZE, RANGED_HEAL_POWER, REPAIR_COST, REPAIR_POWER, SPAWN_RENEW_RATIO,
             UPGRADE_CONTROLLER_POWER,
         },
-        small_enums::Part,
+        part::Part,
     };
 }
 

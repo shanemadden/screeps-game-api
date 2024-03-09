@@ -413,50 +413,6 @@ impl Terrain {
     }
 }
 
-/// Translates body part type and `BODYPARTS_ALL` constants
-#[wasm_bindgen]
-#[derive(
-    Debug,
-    PartialEq,
-    Eq,
-    Clone,
-    Copy,
-    Hash,
-    FromPrimitive,
-    Serialize_repr,
-    Deserialize_repr,
-    Sequence,
-)]
-#[repr(u8)]
-// keep integer representations in sync with js/part.js
-pub enum Part {
-    Move = 0,
-    Work = 1,
-    Carry = 2,
-    Attack = 3,
-    RangedAttack = 4,
-    Tough = 5,
-    Heal = 6,
-    Claim = 7,
-}
-
-impl Part {
-    /// Translates the `BODYPART_COST` constant.
-    #[inline]
-    pub const fn cost(self) -> u32 {
-        match self {
-            Part::Move => 50,
-            Part::Work => 100,
-            Part::Carry => 50,
-            Part::Attack => 80,
-            Part::RangedAttack => 150,
-            Part::Tough => 10,
-            Part::Heal => 250,
-            Part::Claim => 600,
-        }
-    }
-}
-
 /// Translates the `DENSITY_*` constants.
 #[wasm_bindgen]
 #[derive(
