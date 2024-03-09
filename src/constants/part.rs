@@ -45,6 +45,18 @@ thread_local! {
             .set(&JsValue::from(Part::Heal as u8), &JsValue::from_str("heal"))
             .set(&JsValue::from(Part::Claim as u8), &JsValue::from_str("claim"))
     };
+
+    pub static PART_STR_TO_NUM_MAP: js_sys::Map = {
+        js_sys::Map::new()
+            .set(&JsValue::from(Part::Move as u8), &JsValue::from_str("move"))
+            .set(&JsValue::from(Part::Work as u8), &JsValue::from_str("work"))
+            .set(&JsValue::from(Part::Carry as u8), &JsValue::from_str("carry"))
+            .set(&JsValue::from(Part::Attack as u8), &JsValue::from_str("attack"))
+            .set(&JsValue::from(Part::RangedAttack as u8), &JsValue::from_str("ranged_attack"))
+            .set(&JsValue::from(Part::Tough as u8), &JsValue::from_str("tough"))
+            .set(&JsValue::from(Part::Heal as u8), &JsValue::from_str("heal"))
+            .set(&JsValue::from(Part::Claim as u8), &JsValue::from_str("claim"))
+    };
 }
 
 #[wasm_bindgen(module = "/js/part.js")]
@@ -71,7 +83,14 @@ impl Part {
 
     pub(crate) fn slice_to_js_array(parts: &[Self]) -> Array {
         PART_NUM_TO_STR_MAP.with(|map| {
+            // SAFETY: &[Part] contains u8 values because it's repr(u8), safe to transmute to &[u8]
             part_nums_to_str_array(&map, unsafe { std::mem::transmute(parts) })
+        })
+    }
+
+    pub(crate) fn from_bodypart(body_part: &BodyPart) -> Self {
+        PART_STR_TO_NUM_MAP.with(|map| {
+            bodypart_to_part_num(&map, body_part)
         })
     }
 }

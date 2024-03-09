@@ -684,6 +684,6 @@ extern "C" {
 
 impl BodyPart {
     pub fn part(&self) -> Part {
-        crate::constants::convert::part_num_for_bodypart(&js_sys::Map::new(), self)
+        Part::from_bodypart(self)
     }
 }
