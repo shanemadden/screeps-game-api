@@ -140,12 +140,12 @@ impl Part {
         PART_NUM_TO_STR_MAP.with(|map| {
             // SAFETY: &[Part] contains u8 values because it's repr(u8), safe to transmute
             // to &[u8]
-            part_nums_to_str_array(&map, unsafe { std::mem::transmute(parts) })
+            part_nums_to_str_array(map, unsafe { std::mem::transmute(parts) })
         })
     }
 
     pub(crate) fn from_bodypart(body_part: &BodyPart) -> Self {
-        PART_STR_TO_NUM_MAP.with(|map| bodypart_to_part_num(&map, body_part))
+        PART_STR_TO_NUM_MAP.with(|map| bodypart_to_part_num(map, body_part))
     }
 }
 
