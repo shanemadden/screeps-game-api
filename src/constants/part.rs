@@ -33,23 +33,6 @@ pub enum Part {
     Claim = 7,
 }
 
-impl Part {
-    /// Translates the `BODYPART_COST` constant.
-    #[inline]
-    pub const fn cost(self) -> u32 {
-        match self {
-            Part::Move => 50,
-            Part::Work => 100,
-            Part::Carry => 50,
-            Part::Attack => 80,
-            Part::RangedAttack => 150,
-            Part::Tough => 10,
-            Part::Heal => 250,
-            Part::Claim => 600,
-        }
-    }
-}
-
 thread_local! {
     pub static PART_NUM_TO_STR_MAP: js_sys::Map = {
         js_sys::Map::new()
@@ -70,23 +53,43 @@ extern "C" {
     fn part_nums_to_str_array(map: &Map, part_array: &[u8]) -> Array;
 }
 
+impl Part {
+    /// Translates the `BODYPART_COST` constant.
+    #[inline]
+    pub const fn cost(self) -> u32 {
+        match self {
+            Part::Move => 50,
+            Part::Work => 100,
+            Part::Carry => 50,
+            Part::Attack => 80,
+            Part::RangedAttack => 150,
+            Part::Tough => 10,
+            Part::Heal => 250,
+            Part::Claim => 600,
+        }
+    }
+
+    pub(crate) fn slice_to_js_array(parts: &[Self]) -> Array {
+        PART_NUM_TO_STR_MAP.with(|map| {
+            part_nums_to_str_array(&map, unsafe { std::mem::transmute(parts) })
+        })
+    }
+}
+
 #[cfg(test)]
 mod test {
     use wasm_bindgen_test::*;
 
-    use super::{part_nums_to_str_array, PART_NUM_TO_STR_MAP};
+    use super::Part;
 
     #[wasm_bindgen_test]
     pub fn parts_to_array() {
-        // work, carry, move, move
-        PART_NUM_TO_STR_MAP.with(|map| {
-            let body = [1, 2, 0, 0];
-            let array = part_nums_to_str_array(&map, &body);
-            assert_eq!(array.length(), 4);
-            assert_eq!(array.get(0), "work");
-            assert_eq!(array.get(1), "carry");
-            assert_eq!(array.get(2), "move");
-            assert_eq!(array.get(3), "move");
-        })
+        let body = [Part::Work, Part::Carry, Part::Move, Part::Move];
+        let array = Part::slice_to_js_array(&body);
+        assert_eq!(array.length(), 4);
+        assert_eq!(array.get(0), "work");
+        assert_eq!(array.get(1), "carry");
+        assert_eq!(array.get(2), "move");
+        assert_eq!(array.get(3), "move");
     }
 }
