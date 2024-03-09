@@ -66,16 +66,16 @@ pub(crate) mod macros {
 pub mod extra;
 pub mod find;
 pub mod look;
-mod part;
 mod numbers;
+mod part;
 mod recipes;
 pub mod seasonal;
 mod small_enums;
 mod types;
 
 pub use self::{
-    extra::*, find::FindConstant, look::LookConstant, numbers::*, recipes::FactoryRecipe,
-    small_enums::*, types::*, part::*,
+    extra::*, find::FindConstant, look::LookConstant, numbers::*, part::*, recipes::FactoryRecipe,
+    small_enums::*, types::*,
 };
 
 /// Re-export of all constants related to [`Creep`] behavior and operations.

@@ -1,5 +1,5 @@
 use enum_iterator::Sequence;
-use js_sys::{Array, Map};
+use js_sys::{Array, JsString, Map};
 use num_derive::FromPrimitive;
 use serde_repr::{Deserialize_repr, Serialize_repr};
 use wasm_bindgen::prelude::*;
@@ -21,7 +21,6 @@ use crate::objects::BodyPart;
     Sequence,
 )]
 #[repr(u8)]
-// keep integer representations in sync with js/part.js
 pub enum Part {
     Move = 0,
     Work = 1,
@@ -33,8 +32,64 @@ pub enum Part {
     Claim = 7,
 }
 
+#[wasm_bindgen]
+extern "C" {
+    #[wasm_bindgen(js_name = MOVE)]
+    static MOVE_JS: JsString;
+
+    #[wasm_bindgen(js_name = WORK)]
+    static WORK_JS: JsString;
+
+    #[wasm_bindgen(js_name = CARRY)]
+    static CARRY_JS: JsString;
+
+    #[wasm_bindgen(js_name = ATTACK)]
+    static ATTACK_JS: JsString;
+
+    #[wasm_bindgen(js_name = RANGED_ATTACK)]
+    static RANGED_ATTACK_JS: JsString;
+
+    #[wasm_bindgen(js_name = TOUGH)]
+    static TOUGH_JS: JsString;
+
+    #[wasm_bindgen(js_name = HEAL)]
+    static HEAL_JS: JsString;
+
+    #[wasm_bindgen(js_name = CLAIM)]
+    static CLAIM_JS: JsString;
+}
+
+#[cfg(not(test))]
 thread_local! {
-    pub static PART_NUM_TO_STR_MAP: js_sys::Map = {
+    static PART_NUM_TO_STR_MAP: js_sys::Map = {
+        js_sys::Map::new()
+            .set(&JsValue::from(Part::Move as u8), &MOVE_JS)
+            .set(&JsValue::from(Part::Work as u8), &WORK_JS)
+            .set(&JsValue::from(Part::Carry as u8), &CARRY_JS)
+            .set(&JsValue::from(Part::Attack as u8), &ATTACK_JS)
+            .set(&JsValue::from(Part::RangedAttack as u8), &RANGED_ATTACK_JS)
+            .set(&JsValue::from(Part::Tough as u8), &TOUGH_JS)
+            .set(&JsValue::from(Part::Heal as u8), &HEAL_JS)
+            .set(&JsValue::from(Part::Claim as u8), &CLAIM_JS)
+    };
+
+    static PART_STR_TO_NUM_MAP: js_sys::Map = {
+        js_sys::Map::new()
+            .set(&MOVE_JS, &JsValue::from(Part::Move as u8))
+            .set(&WORK_JS, &JsValue::from(Part::Work as u8))
+            .set(&CARRY_JS, &JsValue::from(Part::Carry as u8))
+            .set(&ATTACK_JS, &JsValue::from(Part::Attack as u8))
+            .set(&RANGED_ATTACK_JS, &JsValue::from(Part::RangedAttack as u8))
+            .set(&TOUGH_JS, &JsValue::from(Part::Tough as u8))
+            .set(&HEAL_JS, &JsValue::from(Part::Heal as u8))
+            .set(&CLAIM_JS, &JsValue::from(Part::Claim as u8))
+    };
+}
+
+// test version - use local versions of strings instead of constants
+#[cfg(test)]
+thread_local! {
+    static PART_NUM_TO_STR_MAP: js_sys::Map = {
         js_sys::Map::new()
             .set(&JsValue::from(Part::Move as u8), &JsValue::from_str("move"))
             .set(&JsValue::from(Part::Work as u8), &JsValue::from_str("work"))
@@ -46,7 +101,7 @@ thread_local! {
             .set(&JsValue::from(Part::Claim as u8), &JsValue::from_str("claim"))
     };
 
-    pub static PART_STR_TO_NUM_MAP: js_sys::Map = {
+    static PART_STR_TO_NUM_MAP: js_sys::Map = {
         js_sys::Map::new()
             .set(&JsValue::from_str("move"), &JsValue::from(Part::Move as u8))
             .set(&JsValue::from_str("work"), &JsValue::from(Part::Work as u8))
@@ -83,15 +138,14 @@ impl Part {
 
     pub(crate) fn slice_to_js_array(parts: &[Self]) -> Array {
         PART_NUM_TO_STR_MAP.with(|map| {
-            // SAFETY: &[Part] contains u8 values because it's repr(u8), safe to transmute to &[u8]
+            // SAFETY: &[Part] contains u8 values because it's repr(u8), safe to transmute
+            // to &[u8]
             part_nums_to_str_array(&map, unsafe { std::mem::transmute(parts) })
         })
     }
 
     pub(crate) fn from_bodypart(body_part: &BodyPart) -> Self {
-        PART_STR_TO_NUM_MAP.with(|map| {
-            bodypart_to_part_num(&map, body_part)
-        })
+        PART_STR_TO_NUM_MAP.with(|map| bodypart_to_part_num(&map, body_part))
     }
 }
 
