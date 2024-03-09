@@ -48,14 +48,14 @@ thread_local! {
 
     pub static PART_STR_TO_NUM_MAP: js_sys::Map = {
         js_sys::Map::new()
-            .set(&JsValue::from(Part::Move as u8), &JsValue::from_str("move"))
-            .set(&JsValue::from(Part::Work as u8), &JsValue::from_str("work"))
-            .set(&JsValue::from(Part::Carry as u8), &JsValue::from_str("carry"))
-            .set(&JsValue::from(Part::Attack as u8), &JsValue::from_str("attack"))
-            .set(&JsValue::from(Part::RangedAttack as u8), &JsValue::from_str("ranged_attack"))
-            .set(&JsValue::from(Part::Tough as u8), &JsValue::from_str("tough"))
-            .set(&JsValue::from(Part::Heal as u8), &JsValue::from_str("heal"))
-            .set(&JsValue::from(Part::Claim as u8), &JsValue::from_str("claim"))
+            .set(&JsValue::from_str("move"), &JsValue::from(Part::Move as u8))
+            .set(&JsValue::from_str("work"), &JsValue::from(Part::Work as u8))
+            .set(&JsValue::from_str("carry"), &JsValue::from(Part::Carry as u8))
+            .set(&JsValue::from_str("attack"), &JsValue::from(Part::Attack as u8))
+            .set(&JsValue::from_str("ranged_attack"), &JsValue::from(Part::RangedAttack as u8))
+            .set(&JsValue::from_str("tough"), &JsValue::from(Part::Tough as u8))
+            .set(&JsValue::from_str("heal"), &JsValue::from(Part::Heal as u8))
+            .set(&JsValue::from_str("claim"), &JsValue::from(Part::Claim as u8))
     };
 }
 
