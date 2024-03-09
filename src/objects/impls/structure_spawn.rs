@@ -82,7 +82,7 @@ impl StructureSpawn {
         // SAFETY: &[Part] contains u8 values because it's repr(u8), safe to transmute
         // to &[u8]
         let body_array =
-            crate::constants::convert::part_array_num_to_str(unsafe { std::mem::transmute(body) });
+            crate::constants::convert::part_array_num_to_str(&js_sys::Map::new(), unsafe { std::mem::transmute(body) });
 
         ErrorCode::result_from_i8(Self::spawn_creep_internal(self, body_array, name, None))
     }
@@ -105,7 +105,7 @@ impl StructureSpawn {
         // SAFETY: &[Part] contains u8 values because it's repr(u8), safe to transmute
         // to &[u8]
         let body_array =
-            crate::constants::convert::part_array_num_to_str(unsafe { std::mem::transmute(body) });
+            crate::constants::convert::part_array_num_to_str(&js_sys::Map::new(), unsafe { std::mem::transmute(body) });
 
         let js_opts = ObjectExt::unchecked_from_js(JsValue::from(Object::new()));
 
