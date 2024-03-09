@@ -17,10 +17,12 @@ mod test {
 
     #[wasm_bindgen_test]
     pub fn parts_to_array() {
-        // work, carry, move
-        let body = [2, 1, 0];
+        // work, carry, move, move
+        let body = [1, 2, 0, 0];
         let array = part_array_num_to_str(&body);
         assert_eq!(array.get(0), "work");
-        
+        assert_eq!(array.get(1), "carry");
+        assert_eq!(array.get(2), "move");
+        assert_eq!(array.get(3), "move");
     }
 }
