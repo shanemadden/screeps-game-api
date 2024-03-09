@@ -678,6 +678,9 @@ extern "C" {
     #[wasm_bindgen(method, getter)]
     pub fn boost(this: &BodyPart) -> Option<ResourceType>;
 
+    #[wasm_bindgen(method, getter = type)]
+    pub(crate) fn part_jsvalue(this: &BodyPart) -> JsValue;
+
     #[wasm_bindgen(method, getter)]
     pub fn hits(this: &BodyPart) -> u32;
 }

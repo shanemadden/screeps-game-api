@@ -1,6 +1,7 @@
 use enum_iterator::Sequence;
 use js_sys::{Array, JsString, Map};
 use num_derive::FromPrimitive;
+use num_traits::FromPrimitive;
 use serde_repr::{Deserialize_repr, Serialize_repr};
 use wasm_bindgen::prelude::*;
 
@@ -78,10 +79,26 @@ thread_local! {
     };
 }
 
+#[cfg(feature = "snippets")]
 #[wasm_bindgen(module = "/js/part.js")]
 extern "C" {
     fn bodypart_to_part_num(map: &Map, body_part: &BodyPart) -> Part;
     fn part_nums_to_str_array(map: &Map, part_array: &[u8]) -> Array;
+}
+
+#[cfg(not(feature = "snippets"))]
+fn bodypart_to_part_num(map: &Map, body_part: &BodyPart) -> Part {
+    let n = map.get(&body_part.part_jsvalue()).as_f64().expect("number") as u8;
+    Part::from_u8(n).expect("known part")
+}
+
+#[cfg(not(feature = "snippets"))]
+fn part_nums_to_str_array(map: &Map, part_array: &[u8]) -> Array {
+    let array = Array::new();
+    for part_num in part_array {
+        array.push(&map.get(&JsValue::from(*part_num)));
+    }
+    array
 }
 
 impl Part {
