@@ -88,7 +88,7 @@ extern "C" {
 #[cfg(not(feature = "snippets"))]
 fn bodypart_to_part_num(map: &Map, body_part: &BodyPart) -> Part {
     use num_traits::FromPrimitive;
-    
+
     let n = map.get(&body_part.part_jsvalue()).as_f64().expect("number") as u8;
     Part::from_u8(n).expect("known part")
 }
