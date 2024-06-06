@@ -50,15 +50,11 @@
 //!
 //! # Cargo Features
 //!
-//! ## `generate-pixel`
+//! ## `mmo`
 //!
-//! Enables the function to generate pixels, which is only present on the
-//! Screeps: World official servers.
-//!
-//! ## `inter-shard-memory`
-//!
-//! Enables interacting with `IntershardMemory`, which is not present in most
-//! private server environments.
+//! Enables a number of functions for CPU management and inter-shard
+//! communication present on the Screeps: World official servers but not on
+//! private servers.
 //!
 //! ## `seasonal-season-1`
 //!
@@ -87,11 +83,6 @@
 //! Enables return code conversion from game functions that presumes all return
 //! code values are in the expected ranges skipping checks, and risks undefined
 //! behavior if they are not.
-//!
-//! ## `mmo`
-//!
-//! Enables the `generate-pixel` and `inter-shard-memory` features, which are
-//! present on the Screeps: World official servers but not on private servers.
 #![recursion_limit = "128"]
 // to build locally with doc_cfg enabled, run:
 // `RUSTDOCFLAGS="--cfg docsrs" cargo +nightly doc --all-features`
@@ -103,11 +94,15 @@
 
 // #![warn(clippy::missing_const_for_fn)]
 
+// temporary workaround for https://github.com/rust-lang/rust-clippy/issues/12377
+// fix not being in current stable rust 1.78; should be fixed in 1.79
+#![allow(clippy::empty_docs)]
+
 pub mod console;
 pub mod constants;
 pub mod enums;
 pub mod game;
-#[cfg(feature = "inter-shard-memory")]
+#[cfg(feature = "mmo")]
 pub mod inter_shard_memory;
 pub mod js_collections;
 pub mod local;

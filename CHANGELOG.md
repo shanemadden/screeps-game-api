@@ -1,12 +1,26 @@
 Unreleased
 ==========
 
+### Additions:
+
+- Add function `Direction::iter` which returns an iterator over all the `Direction` enum values
+- Add function `RoomXY::neighbors` which returns an iterator over all the valid neighbors of
+  a given `RoomXY` position
+
+0.21.0 (2024-05-14)
+===================
+
 ### Breaking:
 
 - Change return type of `Flag::name` and `StructureSpawn::name` to `String` from `JsString`
 - Change name of `LocalRoomTerrain::get` to `get_xy` for consistency with `RoomTerrain`
 - Change name of `constants::extra::CONSTRUCTION_SITE_STOMP_RATIO` to
   `CONSTRUCTION_SITE_DROP_RATIO`
+- Remove features `generate-pixel` and `inter-shard-memory`, use the `mmo` feature instead
+- Place `game::cpu::{shard_limits, unlocked, unlocked_time, set_shard_limits, unlock}` functions
+  behind the `mmo` feature
+- Change return type of `game::{construction_sites, structures}` to `JsHashMap<ObjectId<_>, _>`
+  instead of `JsHashMap<RawObjectId, _>`
 
 ### Additions:
 
@@ -25,11 +39,20 @@ Unreleased
 - Add function `StoreObject::resource_types` to get the types of resources that a store can hold
     - This can be used with a `StructureObject` as `StoreObject::try_from(structure_object).map(|store| store.resource_types())`
       which returns a `Result<&'static [ResourceType], StoreObjectConversionError>`
-- Add missing `StoreObject::Reactor` to the `seasonal-season-5` feature.
+- Add missing `StoreObject::Reactor` to the `seasonal-season-5` feature
+- Implement `Serialize` and `Deserialize` for `RoomStatus`
+- Add function `JsHashMap::entries`
+
+### Bugfixes:
+
+- Implement `JsCollectionFromValue` for `Direction`, `ObjectId<_>`
+- Implement `Debug` for `RouteStep`
+- Made the `AttackController` event deserialize correctly
 
 ### Misc:
 
-- Change `PhantomData` in `screeps::local::ObjectId` to better model `ObjectId`'s relationship with the wrapped type.
+- Change `PhantomData` in `screeps::local::ObjectId` to better model `ObjectId`'s relationship with
+  the wrapped type.
     - This allows `ObjectId` to be `Send + Sync` regardless of the wrapped type
 - Update `enum-iterator` to 2.0
 
